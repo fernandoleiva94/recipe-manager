@@ -28,10 +28,10 @@ public class RecipeController {
         Recipe recipe = new Recipe();
         recipe.setDescription(recipeDto.getDescription());
         recipe.setName(recipeDto.getName());
-        recipe.setPortion(recipeDto.getPortion());
-        recipe.setWeightFinal(recipeDto.getWeightFinal());
+        recipe.setQuantity(recipeDto.getQuantity());
+        recipe.setUnit(recipeDto.getUnit());
 
-        Recipe savedRecipe = recipeService.createRecipe(recipe, recipeDto.getRecipeSuppliesDto());
+        Recipe savedRecipe = recipeService.createRecipe(recipe, recipeDto.getIngredients());
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRecipe);
     }
 

@@ -9,11 +9,11 @@ public class RecipeDto {
 
     private Long id;
     private String name;
-    private Long portion;
-    private Double weightFinal;
+    private Double quantity;
+    private String unit;
     private Double costTotal;
     private String description;
-    private Set<RecipeSupplyDto> recipeSuppliesDto;
+    private Set<RecipeSupplyDto> ingredients;
 
 
 }

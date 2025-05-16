@@ -45,10 +45,12 @@ public class RecipeService {
                     .findById(recipeSupplyDto.getSupplyId())
                     .orElseThrow(()-> new RuntimeException("Supply not found"));
 
+
             RecipeSupply recipeSupply = new RecipeSupply();
             recipeSupply.setRecipe(recipe);
             recipeSupply.setSupply(supplyEntity);
             recipeSupply.setQuantity(recipeSupplyDto.getQuantity());
+
             recipe.getRecipeSupplies().add(recipeSupply);
 
         });
@@ -69,11 +71,10 @@ public class RecipeService {
     public Recipe updateRecipe(RecipeDto recipeDto, Long id){
         DecimalFormat df = new DecimalFormat("#.00");
         Recipe recipe = new Recipe();
-        final Double[] costTotal = {0D};
         recipe.setId(id);
         recipe.setName(recipeDto.getName());
-        recipe.setPortion(recipeDto.getPortion());
-        recipe.setWeightFinal(recipeDto.getWeightFinal());
+        recipe.setQuantity(recipeDto.getQuantity());
+        recipe.setUnit(recipeDto.getUnit());
 
         return null;
 
@@ -91,8 +92,8 @@ public class RecipeService {
         RecipeOuputDto dto = new RecipeOuputDto();
         dto.setId(recipe.getId());
         dto.setName(recipe.getName());
-        dto.setPortion(recipe.getPortion());
-        dto.setWeightFinal(recipe.getWeightFinal());
+        dto.setQuantity(recipe.getQuantity());
+        dto.setUnit(recipe.getUnit());
         dto.setCostRecipe(recipe.cost());
 
         // Transformar recipeSupplies

@@ -1,8 +1,12 @@
 package com.sevenb.recipes_manager.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "dish_recipes")
 public class DishRecipe {
@@ -20,40 +24,8 @@ public class DishRecipe {
 
     private Double quantity; // Cantidad de veces que se usa la receta en el plato
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public DishEntity getDish() {
-        return dish;
-    }
-
-    public void setDish(DishEntity dish) {
-        this.dish = dish;
-    }
-
-    public Recipe getRecipe() {
-        return recipe;
-    }
-
-    public void setRecipe(Recipe recipe) {
-        this.recipe = recipe;
-    }
-
-    public Double getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Double quantity) {
-        this.quantity = quantity;
-    }
-
     public Double cost(){
-        return this.getQuantity() * (this.recipe.cost() / this.recipe.getWeightFinal());
-
+        double cost = this.getQuantity() * (this.recipe.cost() / this.recipe.getQuantity());
+       return Math.round(cost * 100.0) / 100.0;
     }
 }

@@ -50,34 +50,38 @@ public class DishService {
         DishEntity dish = new DishEntity();
         dish.setName(dishDTO.getName());
         dish.setDescription(dishDTO.getDescription());
-        dish.setWeight(dishDTO.getWeight());
         dish.setProfitMargin(dishDTO.getProfitMargin());
 
-        // 🔹 Primero guardamos el Dish para obtener su ID
+        // 🔹 Guardamos Dish base
         DishEntity savedDish = dishRepository.save(dish);
 
         // 🔹 Mapeamos Supplies
-        List<DishSupply> dishSupplies =                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          .getSupplies().stream().map(dto -> {
-            DishSupply dishSupply = new DishSupply();
-            dishSupply.setDish(savedDish);
-            dishSupply.setSupply(supplyRepository.findById(dto.getId()).orElseThrow());
-            dishSupply.setQuantity(dto.getQuantity());
-            return dishSupply;
-        }).collect(Collectors.toList());
+        List<DishSupply> dishSupplies = dishDTO.getSupplies()
+                .stream()
+                .map(dtoSupply -> {
+                    DishSupply dishSupply = new DishSupply();
+                    dishSupply.setDish(savedDish);
+                    dishSupply.setQuantity(dtoSupply.getQuantity());
+                    dishSupply.setSupply(supplyRepository.findById(dtoSupply.getId()).orElseThrow());
+                    return dishSupply;
+                })
+                .collect(Collectors.toList());
 
         // 🔹 Mapeamos Recipes
-        List<DishRecipe> dishRecipes = dishDTO.getRecipes().stream().map(dto -> {
-            DishRecipe dishRecipe = new DishRecipe();
-            dishRecipe.setDish(savedDish);
-            dishRecipe.setRecipe(recipeRepository.findById(dto.getId()).orElseThrow());
-            dishRecipe.setQuantity(dto.getWeightFinal());
-            return dishRecipe;
-        }).collect(Collectors.toList());
+        List<DishRecipe> dishRecipes = dishDTO.getRecipes()
+                .stream()
+                .map(dtoRecipe -> {
+                    DishRecipe dishRecipe = new DishRecipe();
+                    dishRecipe.setDish(savedDish);
+                    dishRecipe.setRecipe(recipeRepository.findById(dtoRecipe.getId()).orElseThrow());
+                    dishRecipe.setQuantity(dtoRecipe.getQuantity());
+                    return dishRecipe;
+                })
+                .collect(Collectors.toList());
 
         savedDish.setSupplies(dishSupplies);
         savedDish.setRecipes(dishRecipes);
 
-        // 🔹 Guardamos nuevamente para persistir las relaciones
         return dishRepository.save(savedDish);
     }
 
@@ -85,7 +89,6 @@ public class DishService {
         return dishRepository.findById(id).map(dish -> {
             dish.setName(dishDetails.getName());
             dish.setDescription(dishDetails.getDescription());
-            dish.setWeight(dishDetails.getWeight());
             return dishRepository.save(dish);
         }).orElseThrow(() -> new RuntimeException("Dish not found"));
     }
@@ -99,7 +102,6 @@ public class DishService {
         DishOutpuDto outpuDto = new DishOutpuDto();
         outpuDto.setId(dishEntity.getId());
         outpuDto.setDescription(dishEntity.getDescription());
-        outpuDto.setWeight(dishEntity.getWeight());
         outpuDto.setName(dishEntity.getName());
 
         Set<SupplyDto> supplies = dishEntity.getSupplies().stream()

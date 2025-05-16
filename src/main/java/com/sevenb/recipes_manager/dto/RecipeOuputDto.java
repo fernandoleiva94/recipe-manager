@@ -12,8 +12,8 @@ public class RecipeOuputDto {
     private Long id;
     //no tiene que ser null.
     private String name;
-    private Long portion;
-    private Double weightFinal;
+    private String unit;
+    private Double quantity;
     private String description;
     private Double costRecipe;
     private Set<SupplyDto> supplies;

@@ -19,10 +19,8 @@ public class DishEntity {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
-
         private String name;
         private String description;
-        private Double weight;
         private Double profitMargin;
 
         @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -40,7 +38,6 @@ public class DishEntity {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", weight=" + weight +
                 ", supplies=" + supplies +
                 ", recipes=" + recipes +
                 '}';
@@ -58,8 +55,8 @@ public class DishEntity {
     }
 
     public  Double price(){
-        return cost() *  (1 + (profitMargin / 100));
-
+        double price =  cost() *  (1 + (profitMargin / 100));
+        return  Math.round(price * 100.0) / 100.0;
     }
 
 }
