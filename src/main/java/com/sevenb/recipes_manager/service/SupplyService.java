@@ -1,8 +1,10 @@
 package com.sevenb.recipes_manager.service;
 
+import com.sevenb.recipes_manager.Exception.CannotDeleteSupplyException;
 import com.sevenb.recipes_manager.entity.SupplyEntity;
 import com.sevenb.recipes_manager.repository.SupplyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +17,8 @@ public class SupplyService {
 
 
 
-    public List<SupplyEntity> getAllSupplies() {
-        return supplyRepository.findAll();
+    public List<SupplyEntity> getAllSupplies(Long userId) {
+        return supplyRepository.findAllByUserId(userId);
     }
 
     public SupplyEntity getSupplyById(Long id) {
@@ -49,10 +51,17 @@ public class SupplyService {
     }
 
     public void deleteSupply(Long id) {
-        supplyRepository.deleteById(id);
+try{
+    supplyRepository.deleteById(id);
+  } catch (DataIntegrityViolationException e) {
+        // Esto atrapa errores de constraint (relaciones con productos)
+        throw new CannotDeleteSupplyException("El insumo está siendo ocupado por algún producto o producto final. Por favor, elimínalos primero.");
+    }
+
     }
 
     public List<SupplyEntity> searchByName(String name) {
+
         return supplyRepository.findByNameContainingIgnoreCase(name);
     }
 }

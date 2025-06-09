@@ -3,6 +3,8 @@ package com.sevenb.recipes_manager.controller;
 import com.sevenb.recipes_manager.dto.SupplyDto;
 import com.sevenb.recipes_manager.entity.SupplyEntity;
 import com.sevenb.recipes_manager.service.SupplyService;
+import com.sevenb.recipes_manager.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,20 +13,25 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/supplies")
+@RequiredArgsConstructor
 public class SupplyController {
 
-    @Autowired
-    private SupplyService supplyService;
+
+    private final SupplyService supplyService;
+    private final JwtUtil jwtUtil;
 
     // Get all supplies
     @GetMapping
-    public List<SupplyEntity> getAllSupplies() {
-        return supplyService.getAllSupplies();
+    public List<SupplyEntity> getAllSupplies(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtUtil.extractUserId(token);
+        return supplyService.getAllSupplies(userId);
     }
 
     // Get a supply by ID
     @GetMapping("/{id}")
-    public ResponseEntity<SupplyEntity> getSupplyById(@PathVariable Long id) {
+    public ResponseEntity<SupplyEntity> getSupplyById(
+            @PathVariable Long id) {
         SupplyEntity supply = supplyService.getSupplyById(id);
         if (supply != null) {
             return ResponseEntity.ok(supply);
@@ -34,7 +41,11 @@ public class SupplyController {
 
     // Create a new supply
     @PostMapping
-    public SupplyEntity createSupply(@RequestBody SupplyEntity supply) {
+    public SupplyEntity createSupply(@RequestHeader("Authorization") String authHeader
+            ,@RequestBody SupplyEntity supply) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtUtil.extractUserId(token);
+        supply.setUserId(userId);
         return supplyService.saveSupply(supply);
     }
 

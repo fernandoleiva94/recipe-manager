@@ -11,12 +11,10 @@ import com.sevenb.recipes_manager.repository.DishRepository;
 import com.sevenb.recipes_manager.repository.RecipeRepository;
 import com.sevenb.recipes_manager.repository.SupplyRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,15 +32,16 @@ public class DishService {
     }
 
 
-    public List<DishOutpuDto> getAllDishes() {
+    public List<DishOutpuDto> getAllDishes(Long userId) {
         List<DishOutpuDto> dishOutpuDtos = new ArrayList<>();
-        dishRepository.findAll().forEach(l
+        dishRepository.findAllByUserId(userId).forEach(l
                 ->dishOutpuDtos.add(toDishDto(l)));
         return dishOutpuDtos;
     }
 
-    public Optional<DishEntity> getDishById(Long id) {
-        return dishRepository.findById(id);
+    public DishOutpuDto getDishById(Long id) {
+        DishEntity dishOutput = dishRepository.findById(id).orElse(null);
+        return Objects.isNull(dishOutput) ?  null : toDishDto(dishOutput);
     }
 
     @Transactional
@@ -51,6 +50,7 @@ public class DishService {
         dish.setName(dishDTO.getName());
         dish.setDescription(dishDTO.getDescription());
         dish.setProfitMargin(dishDTO.getProfitMargin());
+        dish.setUserId(dishDTO.getUserId());
 
         // 🔹 Guardamos Dish base
         DishEntity savedDish = dishRepository.save(dish);
@@ -112,6 +112,7 @@ public class DishService {
                     supplyDTO.setId(supply.getSupply().getId());
                     supplyDTO.setQuantity(supply.getQuantity());
                     supplyDTO.setPrice(supply.cost());
+                    supplyDTO.setUnit(supply.getSupply().getUnit());
                     return supplyDTO;
                 })
                 .collect(Collectors.toSet());
@@ -125,6 +126,8 @@ public class DishService {
                     recipeDto.setDescription(recipe.getRecipe().getDescription());
                     recipeDto.setName(recipe.getRecipe().getName());
                     recipeDto.setCostTotal(recipe.cost());
+                    recipeDto.setUnit(recipe.getRecipe().getUnit());
+                    recipeDto.setQuantity(recipe.getQuantity());
                     return recipeDto;
                 }).collect(Collectors.toSet());
 

@@ -20,7 +20,9 @@ public class Recipe {
     private Double quantity;
     private String  unit;
     private String description;
-    @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Long userId;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RecipeSupply> recipeSupplies = new HashSet<>();;
 
 

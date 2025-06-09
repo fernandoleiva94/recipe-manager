@@ -18,8 +18,8 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public List<CategoryDto> getAllCategories() {
-        return categoryRepository.findAll().stream()
+    public List<CategoryDto> getAllCategories(Long userId) {
+        return categoryRepository.findAllByUserId(userId).stream()
                 .map(category -> new CategoryDto(category.getId(), category.getDescription()))
                 .collect(Collectors.toList());
     }
@@ -32,12 +32,12 @@ public class CategoryService {
 
     @Transactional
     public CategoryDto createCategory(CategoryDto categoryDTO) {
-        if (categoryRepository.findByDescription(categoryDTO.getDescription()).isPresent()) {
+        if (categoryRepository.findByDescriptionAndUserId(categoryDTO.getDescription(), categoryDTO.getUserId()).isPresent()) {
             throw new RuntimeException("Category already exists");
         }
         Category category = new Category();
         category.setDescription(categoryDTO.getDescription());
-
+        category.setUserId(categoryDTO.getUserId());
         category = categoryRepository.save(category);
         return new CategoryDto(category.getId(), category.getDescription());
     }

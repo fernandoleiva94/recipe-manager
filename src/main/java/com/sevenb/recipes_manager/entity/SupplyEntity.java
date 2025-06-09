@@ -25,6 +25,8 @@ public class SupplyEntity {
     private String unit;
     private String description;
     private Double wastage; //merma
+    private Long userId;
+
     @OneToMany(mappedBy = "supply", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private Set<RecipeSupply> recipeSupplies; // Relación con la tabla intermedia

@@ -1,6 +1,7 @@
 package com.sevenb.recipes_manager.service;
 
 
+import com.sevenb.recipes_manager.Exception.CannotDeleteSupplyException;
 import com.sevenb.recipes_manager.dto.RecipeDto;
 import com.sevenb.recipes_manager.dto.RecipeOuputDto;
 import com.sevenb.recipes_manager.dto.RecipeSupplyDto;
@@ -13,17 +14,17 @@ import com.sevenb.recipes_manager.repository.RecipeRepository;
 import com.sevenb.recipes_manager.repository.SupplyRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class RecipeService {
-
-    private final ModelMapper modelMapper;
 
     @Autowired
     private RecipeRepository recipeRepository;
@@ -33,10 +34,6 @@ public class RecipeService {
 
     @Autowired
     private RecipeSupplyRepository recipeIngredientRepository;
-
-    public RecipeService(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
 
     public Recipe createRecipe(Recipe recipe , Set<RecipeSupplyDto> recipeSupplyDtos){
 
@@ -54,29 +51,49 @@ public class RecipeService {
             recipe.getRecipeSupplies().add(recipeSupply);
 
         });
+
         return recipeRepository.save(recipe);
     }
 
-    public Set<RecipeOuputDto> getAllRecipes() {
+    public Set<RecipeOuputDto> getAllRecipes(Long userId) {
         Set<RecipeOuputDto> recipeOuputDtos = new HashSet<>();
-        recipeRepository.findAll().forEach(l
+        recipeRepository.findAllByUserId(userId).forEach(l
                 -> recipeOuputDtos.add(toRecipeDTO(l)));
         return recipeOuputDtos;
     }
 
-    public Recipe getRecipeById(Long id) {
-        return recipeRepository.findById(id).orElse(null);
+    public RecipeOuputDto getRecipeById(Long id) {
+        Recipe recipe = recipeRepository.findById(id).orElseThrow(()-> new RuntimeException("Recipe not found"));
+        return toRecipeDTO(recipe);
     }
 
-    public Recipe updateRecipe(RecipeDto recipeDto, Long id){
+    public RecipeOuputDto updateRecipe(RecipeDto recipeDto, Long id){
         DecimalFormat df = new DecimalFormat("#.00");
-        Recipe recipe = new Recipe();
-        recipe.setId(id);
-        recipe.setName(recipeDto.getName());
-        recipe.setQuantity(recipeDto.getQuantity());
-        recipe.setUnit(recipeDto.getUnit());
+        Recipe recipe = recipeRepository.findById(id).orElseThrow(()-> new RuntimeException("Recipe not found"));
+            Set<RecipeSupply> recipeSupplies = new HashSet<>();
+            recipe.setId(id);
+            recipe.setName(recipeDto.getName());
+            recipe.setQuantity(recipeDto.getQuantity());
+            recipe.setUnit(recipeDto.getUnit());
+            recipe.getRecipeSupplies().clear();
 
-        return null;
+            recipeDto.getIngredients().forEach( recipeSupplyDto -> {
+                SupplyEntity supplyEntity = supplyRepository
+                        .findById(recipeSupplyDto.getSupplyId())
+                        .orElseThrow(()-> new RuntimeException("Supply not found"));
+
+
+                RecipeSupply recipeSupply = new RecipeSupply();
+                recipeSupply.setRecipe(recipe);
+                recipeSupply.setSupply(supplyEntity);
+                recipeSupply.setQuantity(recipeSupplyDto.getQuantity());
+
+                recipe.getRecipeSupplies().add(recipeSupply);
+
+            });
+
+            recipeRepository.save(recipe);
+        return toRecipeDTO(recipe);
 
     }
 
@@ -84,9 +101,13 @@ public class RecipeService {
 
 
     public void deleteRecipe(Long id) {
-        recipeRepository.deleteById(id);
-    }
+        try{
+            recipeRepository.deleteById(id);
+        }catch (DataIntegrityViolationException e){
+            throw new CannotDeleteSupplyException("El insumo está siendo ocupado por algún producto final. Por favor, elimínalos primero.");
+        }
 
+    }
 
     public RecipeOuputDto toRecipeDTO(Recipe recipe) {
         RecipeOuputDto dto = new RecipeOuputDto();
@@ -105,6 +126,7 @@ public class RecipeService {
                     supplyDTO.setId(supply.getSupply().getId());
                     supplyDTO.setQuantity(supply.getQuantity());
                     supplyDTO.setPrice(supply.cost());
+                    supplyDTO.setUnit(supply.getSupply().getUnit());
                     return supplyDTO;
                 })
                 .collect(Collectors.toSet());
@@ -112,4 +134,5 @@ public class RecipeService {
 
         return dto;
     }
+
 }

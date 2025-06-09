@@ -10,4 +10,5 @@ public class DishDto {
       private List<SupplyDto> supplies;
     private List<RecipeDto> recipes;
     private Double profitMargin;
+    private Long userId;
 }

@@ -4,38 +4,47 @@ import com.sevenb.recipes_manager.dto.DishDto;
 import com.sevenb.recipes_manager.dto.DishOutpuDto;
 import com.sevenb.recipes_manager.entity.DishEntity;
 import com.sevenb.recipes_manager.service.DishService;
+import com.sevenb.recipes_manager.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/dishes")
+@RequiredArgsConstructor
 public class DishController {
 
 
     private final DishService dishService;
+    private final JwtUtil jwtUtil;
 
-    public DishController(DishService dishService) {
-        this.dishService = dishService;
-    }
 
 
     @GetMapping
-    public List<DishOutpuDto> getAllDishes() {
-        return dishService.getAllDishes();
+    public ResponseEntity<List<DishOutpuDto>> getAllDishes(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtUtil.extractUserId(token);
+        return ResponseEntity.status(HttpStatus.OK).body(dishService.getAllDishes(userId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DishEntity> getDishById(@PathVariable Long id) {
-        return dishService.getDishById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<DishOutpuDto> getDishById(@PathVariable Long id) {
+        DishOutpuDto dishOutpuDto = dishService.getDishById(id);
+        if(Objects.nonNull(dishOutpuDto))
+            return ResponseEntity.ok(dishOutpuDto);
+        else
+            return ResponseEntity.notFound().build();
     }
 
     @PostMapping
-    public ResponseEntity<DishEntity> createDish(@RequestBody DishDto dish) {
+    public ResponseEntity<DishEntity> createDish(@RequestHeader("Authorization") String authHeader,@RequestBody DishDto dish) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtUtil.extractUserId(token);
+        dish.setUserId(userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(dishService.createDish(dish));
     }
 

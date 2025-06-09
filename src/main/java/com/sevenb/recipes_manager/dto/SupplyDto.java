@@ -9,5 +9,6 @@ public class SupplyDto {
     private String name;
     private Double price;
     private Double quantity;
+    private String unit;
 
 }
