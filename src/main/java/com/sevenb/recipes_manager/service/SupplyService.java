@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class SupplyService {
@@ -26,13 +27,14 @@ public class SupplyService {
     }
 
     public SupplyEntity saveSupply(SupplyEntity supply) {
+        supply.setName(supply.getName().toLowerCase());
         return supplyRepository.save(supply);
     }
 
     public SupplyEntity updateSupply(Long id, SupplyEntity supplyDetails) {
         SupplyEntity supply = supplyRepository.findById(id).orElse(null);
         if (supply != null) {
-            supply.setName(supplyDetails.getName());
+            supply.setName(supplyDetails.getName().toUpperCase(Locale.ROOT));
             supply.setQuantity(supplyDetails.getQuantity());
             supply.setPrice(supplyDetails.getPrice());
             supply.setUnit(supplyDetails.getUnit());

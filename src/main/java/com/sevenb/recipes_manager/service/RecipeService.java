@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,6 +44,7 @@ public class RecipeService {
                     .orElseThrow(()-> new RuntimeException("Supply not found"));
 
 
+            recipe.setName(recipe.getName().toUpperCase(Locale.ROOT));
             RecipeSupply recipeSupply = new RecipeSupply();
             recipeSupply.setRecipe(recipe);
             recipeSupply.setSupply(supplyEntity);
@@ -72,7 +74,7 @@ public class RecipeService {
         Recipe recipe = recipeRepository.findById(id).orElseThrow(()-> new RuntimeException("Recipe not found"));
             Set<RecipeSupply> recipeSupplies = new HashSet<>();
             recipe.setId(id);
-            recipe.setName(recipeDto.getName());
+            recipe.setName(recipeDto.getName().toUpperCase(Locale.ROOT));
             recipe.setQuantity(recipeDto.getQuantity());
             recipe.setUnit(recipeDto.getUnit());
             recipe.getRecipeSupplies().clear();

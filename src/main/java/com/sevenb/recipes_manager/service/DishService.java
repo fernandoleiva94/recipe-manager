@@ -47,7 +47,7 @@ public class DishService {
     @Transactional
     public DishEntity createDish(DishDto dishDTO) {
         DishEntity dish = new DishEntity();
-        dish.setName(dishDTO.getName());
+        dish.setName(dishDTO.getName().toUpperCase(Locale.ROOT));
         dish.setDescription(dishDTO.getDescription());
         dish.setProfitMargin(dishDTO.getProfitMargin());
         dish.setUserId(dishDTO.getUserId());
