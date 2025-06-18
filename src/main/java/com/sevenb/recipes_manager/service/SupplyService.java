@@ -27,7 +27,7 @@ public class SupplyService {
     }
 
     public SupplyEntity saveSupply(SupplyEntity supply) {
-        supply.setName(supply.getName().toLowerCase());
+        supply.setName(supply.getName().toUpperCase(Locale.ROOT));
         return supplyRepository.save(supply);
     }
 
