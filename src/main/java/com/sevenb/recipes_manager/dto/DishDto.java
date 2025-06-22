@@ -7,7 +7,7 @@ import java.util.List;
 public class DishDto {
     private String name;
     private String description;
-      private List<SupplyDto> supplies;
+    private List<SupplyDto> supplies;
     private List<RecipeDto> recipes;
     private Double profitMargin;
     private Long userId;

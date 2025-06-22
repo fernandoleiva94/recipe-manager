@@ -49,7 +49,7 @@ public class DishController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DishEntity> updateDish(@PathVariable Long id, @RequestBody DishEntity dish) {
+    public ResponseEntity<DishOutpuDto> updateDish(@PathVariable Long id, @RequestBody DishDto dish) {
         return ResponseEntity.ok(dishService.updateDish(id, dish));
     }
 

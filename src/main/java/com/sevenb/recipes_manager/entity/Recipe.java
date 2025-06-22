@@ -23,7 +23,7 @@ public class Recipe {
     private Long userId;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<RecipeSupply> recipeSupplies = new HashSet<>();;
+    private Set<RecipeSupply> recipeSupplies = new HashSet<>();
 
 
     public Double cost(){
