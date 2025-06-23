@@ -23,6 +23,7 @@ public class DishEntity {
         private String description;
         private Double profitMargin;
         private Long userId;
+        private String imageUrl;
 
         @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL, orphanRemoval = true)
         private List<DishSupply> supplies;

@@ -16,6 +16,7 @@ public class DishOutpuDto {
     private Double costDish;
     private Double profitMargin;
     private Double price;
+    private String imageUrl;
 
     private Set<RecipeDto> recipe;
     private Set<SupplyDto> supplies;

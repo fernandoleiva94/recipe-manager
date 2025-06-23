@@ -11,4 +11,5 @@ public class DishDto {
     private List<RecipeDto> recipes;
     private Double profitMargin;
     private Long userId;
+    private String imageUrl;
 }

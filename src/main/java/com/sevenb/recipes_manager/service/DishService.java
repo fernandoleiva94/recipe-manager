@@ -51,6 +51,7 @@ public class DishService {
         dish.setDescription(dishDTO.getDescription());
         dish.setProfitMargin(dishDTO.getProfitMargin());
         dish.setUserId(dishDTO.getUserId());
+        dish.setImageUrl(dishDTO.getImageUrl());
 
         // 🔹 Guardamos Dish base
         DishEntity savedDish = dishRepository.save(dish);
@@ -143,6 +144,7 @@ public class DishService {
         outpuDto.setId(dishEntity.getId());
         outpuDto.setDescription(dishEntity.getDescription());
         outpuDto.setName(dishEntity.getName());
+        outpuDto.setImageUrl(dishEntity.getImageUrl());
 
         Set<SupplyDto> supplies = dishEntity.getSupplies().stream()
                 .map(supply -> {
