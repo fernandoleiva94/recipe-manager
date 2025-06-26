@@ -21,6 +21,7 @@ public class Recipe {
     private String  unit;
     private String description;
     private Long userId;
+    private String imageUrl;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RecipeSupply> recipeSupplies = new HashSet<>();

@@ -16,5 +16,6 @@ public class RecipeOuputDto {
     private Double quantity;
     private String description;
     private Double costRecipe;
+    private String imageUrl;
     private Set<SupplyDto> supplies;
 }

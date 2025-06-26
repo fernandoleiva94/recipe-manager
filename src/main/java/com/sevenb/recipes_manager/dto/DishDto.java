@@ -12,4 +12,5 @@ public class DishDto {
     private Double profitMargin;
     private Long userId;
     private String imageUrl;
+    private Boolean deleteImage;
 }

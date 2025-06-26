@@ -1,8 +1,10 @@
 package com.sevenb.recipes_manager.controller;
 
+import com.sevenb.recipes_manager.dto.DishDto;
 import com.sevenb.recipes_manager.dto.RecipeOuputDto;
 import com.sevenb.recipes_manager.dto.RecipeDto;
 import com.sevenb.recipes_manager.entity.Recipe;
+import com.sevenb.recipes_manager.service.CloudinaryService;
 import com.sevenb.recipes_manager.service.RecipeService;
 import com.sevenb.recipes_manager.service.SupplyService;
 import com.sevenb.recipes_manager.util.JwtUtil;
@@ -11,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Set;
 
@@ -23,14 +27,22 @@ public class RecipeController {
 
     private final RecipeService recipeService;
     private final JwtUtil jwtUtil;
+    private final CloudinaryService cloudinaryService;
 
     @PostMapping
-    public ResponseEntity<Recipe> createRecipe(@RequestHeader("Authorization") String authHeader,@RequestBody RecipeDto recipeDto) {
+    public ResponseEntity<Recipe> createRecipe(@RequestHeader("Authorization") String authHeader,
+                                               @RequestPart("recipe") RecipeDto recipeDto,
+                                               @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
         Recipe recipe = new Recipe();
         recipe.setDescription(recipeDto.getDescription());
         recipe.setName(recipeDto.getName());
         recipe.setQuantity(recipeDto.getQuantity());
         recipe.setUnit(recipeDto.getUnit());
+
+        if (image != null) {
+            String url = cloudinaryService.upload(image);
+            recipe.setImageUrl(url);
+        }
 
 
         String token = authHeader.replace("Bearer ", "");
@@ -66,7 +78,19 @@ public class RecipeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RecipeOuputDto> updateRecipe(@RequestBody RecipeDto recipe, @PathVariable Long id) {
+    public ResponseEntity<RecipeOuputDto> updateRecipe(@RequestPart("recipe") RecipeDto recipe,
+                                                       @PathVariable Long id,
+                                                       @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+
+        if (image != null) {
+            String url = cloudinaryService.upload(image);
+            recipe.setImageUrl(url);
+        }
+        if (Boolean.TRUE.equals(recipe.getDeleteImage())) {
+            recipe.setImageUrl(null);
+        }
+
+
         RecipeOuputDto savedRecipe = recipeService.updateRecipe(recipe,id);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRecipe);
     }

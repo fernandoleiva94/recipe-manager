@@ -61,7 +61,20 @@ public class DishController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DishOutpuDto> updateDish(@PathVariable Long id, @RequestBody DishDto dish) {
+    public ResponseEntity<DishOutpuDto> updateDish(@PathVariable Long id,
+                                                   @RequestPart("dish") DishDto dish,
+                                                   @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+
+
+
+        if (image != null) {
+            String url = cloudinaryService.upload(image);
+            dish.setImageUrl(url);
+        }
+        if (Boolean.TRUE.equals(dish.getDeleteImage())) {
+            dish.setImageUrl(null);
+        }
+
         return ResponseEntity.ok(dishService.updateDish(id, dish));
     }
 

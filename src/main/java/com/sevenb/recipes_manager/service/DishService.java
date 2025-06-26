@@ -96,6 +96,7 @@ public class DishService {
             dish.setName(dishDTO.getName());
             dish.setDescription(dishDTO.getDescription());
             dish.setProfitMargin(dishDTO.getProfitMargin());
+            dish.setImageUrl(dishDTO.getImageUrl());
             return dish;
         }).orElseThrow(() -> new RuntimeException("Dish not found"));
 

@@ -12,6 +12,7 @@ import com.sevenb.recipes_manager.entity.SupplyEntity;
 import com.sevenb.recipes_manager.repository.RecipeSupplyRepository;
 import com.sevenb.recipes_manager.repository.RecipeRepository;
 import com.sevenb.recipes_manager.repository.SupplyRepository;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -36,6 +37,7 @@ public class RecipeService {
     @Autowired
     private RecipeSupplyRepository recipeIngredientRepository;
 
+    @Transactional
     public Recipe createRecipe(Recipe recipe , Set<RecipeSupplyDto> recipeSupplyDtos){
 
         recipeSupplyDtos.forEach( recipeSupplyDto -> {
@@ -69,14 +71,17 @@ public class RecipeService {
         return toRecipeDTO(recipe);
     }
 
+    @Transactional
     public RecipeOuputDto updateRecipe(RecipeDto recipeDto, Long id){
         DecimalFormat df = new DecimalFormat("#.00");
         Recipe recipe = recipeRepository.findById(id).orElseThrow(()-> new RuntimeException("Recipe not found"));
             Set<RecipeSupply> recipeSupplies = new HashSet<>();
             recipe.setId(id);
             recipe.setName(recipeDto.getName().toUpperCase(Locale.ROOT));
+            recipe.setDescription(recipeDto.getDescription());
             recipe.setQuantity(recipeDto.getQuantity());
             recipe.setUnit(recipeDto.getUnit());
+            recipe.setImageUrl(recipeDto.getImageUrl());
             recipe.getRecipeSupplies().clear();
 
             recipeDto.getIngredients().forEach( recipeSupplyDto -> {
@@ -118,6 +123,8 @@ public class RecipeService {
         dto.setQuantity(recipe.getQuantity());
         dto.setUnit(recipe.getUnit());
         dto.setCostRecipe(recipe.cost());
+        dto.setImageUrl(recipe.getImageUrl());
+        dto.setDescription(recipe.getDescription());
 
         // Transformar recipeSupplies
         Set<SupplyDto> supplies = recipe.getRecipeSupplies().stream()

@@ -13,6 +13,8 @@ public class RecipeDto {
     private String unit;
     private Double costTotal;
     private String description;
+    private String imageUrl;
+    private Boolean deleteImage;
     private Set<RecipeSupplyDto> ingredients;
 
 
