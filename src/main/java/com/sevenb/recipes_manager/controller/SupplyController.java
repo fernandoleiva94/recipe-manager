@@ -1,14 +1,18 @@
 package com.sevenb.recipes_manager.controller;
 
-import com.sevenb.recipes_manager.dto.SupplyDto;
+import com.sevenb.recipes_manager.dto.LossDTO;
+import com.sevenb.recipes_manager.dto.SupplyLossOutputDTO;
+import com.sevenb.recipes_manager.entity.SupplyLoss;
 import com.sevenb.recipes_manager.entity.SupplyEntity;
+import com.sevenb.recipes_manager.service.LossService;
 import com.sevenb.recipes_manager.service.SupplyService;
 import com.sevenb.recipes_manager.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -19,6 +23,7 @@ public class SupplyController {
 
     private final SupplyService supplyService;
     private final JwtUtil jwtUtil;
+    private final LossService lossService;
 
     // Get all supplies
     @GetMapping
@@ -71,4 +76,20 @@ public class SupplyController {
     public List<SupplyEntity> searchSupplies(@RequestParam String name) {
         return supplyService.searchByName(name);
     }
+
+    @PostMapping("/losses")
+    public ResponseEntity<SupplyLoss> createLoss(@RequestBody LossDTO dto) {
+        SupplyLoss saved = lossService.registerLoss(dto);
+        return ResponseEntity.ok(saved);
+    }
+
+    @GetMapping("/losses")
+    public List<SupplyLossOutputDTO> getLossesByDateRange(
+            @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+
+        return lossService.findByLossDateBetween(from, to);
+    }
+
+
 }
