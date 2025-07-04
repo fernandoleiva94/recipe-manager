@@ -13,4 +13,5 @@ public class LossDTO {
     private BigDecimal lostQuantity;
     private String description;
     private LocalDate lossDate;
+    private String imageUrl;
 }

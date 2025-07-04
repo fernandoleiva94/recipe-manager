@@ -4,6 +4,7 @@ import com.sevenb.recipes_manager.dto.LossDTO;
 import com.sevenb.recipes_manager.dto.SupplyLossOutputDTO;
 import com.sevenb.recipes_manager.entity.SupplyLoss;
 import com.sevenb.recipes_manager.entity.SupplyEntity;
+import com.sevenb.recipes_manager.service.CloudinaryService;
 import com.sevenb.recipes_manager.service.LossService;
 import com.sevenb.recipes_manager.service.SupplyService;
 import com.sevenb.recipes_manager.util.JwtUtil;
@@ -11,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -24,6 +27,7 @@ public class SupplyController {
     private final SupplyService supplyService;
     private final JwtUtil jwtUtil;
     private final LossService lossService;
+    private final CloudinaryService cloudinaryService;
 
     // Get all supplies
     @GetMapping
@@ -78,7 +82,15 @@ public class SupplyController {
     }
 
     @PostMapping("/losses")
-    public ResponseEntity<SupplyLoss> createLoss(@RequestBody LossDTO dto) {
+    public ResponseEntity<SupplyLoss> createLoss(@RequestPart("loss") LossDTO dto,
+                                                 @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+
+        if (image != null) {
+            String url = cloudinaryService.upload(image);
+            dto.setImageUrl(url);
+        }
+
+
         SupplyLoss saved = lossService.registerLoss(dto);
         return ResponseEntity.ok(saved);
     }

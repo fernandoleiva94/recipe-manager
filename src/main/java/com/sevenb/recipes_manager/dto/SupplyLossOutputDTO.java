@@ -14,5 +14,6 @@ public class SupplyLossOutputDTO {
     private LocalDate lossDate;
     private String SupplyName;
     private String unit;
+    private String imageUrl;
 
 }

@@ -31,6 +31,7 @@ public class LossService {
         loss.setLostQuantity(dto.getLostQuantity());
         loss.setDescription(dto.getDescription());
         loss.setLossDate(dto.getLossDate());
+        loss.setImageUrl(dto.getImageUrl());
 
         return lossRepository.save(loss);
     }
@@ -45,13 +46,13 @@ public class LossService {
 
     public SupplyLossOutputDTO toSupllylossDto(SupplyLoss supplyLoss){
         SupplyLossOutputDTO dto = new SupplyLossOutputDTO();
-         dto.setId(supplyLoss.getId());
+        dto.setId(supplyLoss.getId());
         dto.setQuantity(supplyLoss.getLostQuantity());
         dto.setDescription(supplyLoss.getDescription());
         dto.setSupplyName(supplyLoss.getSupply().getName());
         dto.setLossDate(supplyLoss.getLossDate());
         dto.setUnit(supplyLoss.getSupply().getUnit());
-
+        dto.setImageUrl(supplyLoss.getImageUrl());
     return dto;
     }
 

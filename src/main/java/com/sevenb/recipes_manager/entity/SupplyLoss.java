@@ -31,4 +31,9 @@ public class SupplyLoss {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "image_url", nullable = true)
+    private String imageUrl ;
+
+
 }
