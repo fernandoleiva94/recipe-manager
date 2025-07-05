@@ -81,6 +81,7 @@ public class RecipeService {
             recipe.setDescription(recipeDto.getDescription());
             recipe.setQuantity(recipeDto.getQuantity());
             recipe.setUnit(recipeDto.getUnit());
+            recipe.getCategory().setId(recipeDto.getCategoryId());
             recipe.setImageUrl(recipeDto.getImageUrl());
             recipe.getRecipeSupplies().clear();
 
@@ -125,6 +126,7 @@ public class RecipeService {
         dto.setCostRecipe(recipe.cost());
         dto.setImageUrl(recipe.getImageUrl());
         dto.setDescription(recipe.getDescription());
+        dto.setRecipeCategory(recipe.getCategory());
 
         // Transformar recipeSupplies
         Set<SupplyDto> supplies = recipe.getRecipeSupplies().stream()

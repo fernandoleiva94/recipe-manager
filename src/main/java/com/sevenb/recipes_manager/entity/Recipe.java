@@ -26,6 +26,9 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RecipeSupply> recipeSupplies = new HashSet<>();
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    private RecipeCategory category ;
+
 
     public Double cost(){
         double sum = this.recipeSupplies.stream()

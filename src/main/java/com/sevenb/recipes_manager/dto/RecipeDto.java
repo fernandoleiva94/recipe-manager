@@ -15,6 +15,7 @@ public class RecipeDto {
     private String description;
     private String imageUrl;
     private Boolean deleteImage;
+    private Long categoryId;
     private Set<RecipeSupplyDto> ingredients;
 
 

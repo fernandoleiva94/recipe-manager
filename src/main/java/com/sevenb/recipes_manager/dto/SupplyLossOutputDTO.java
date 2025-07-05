@@ -17,3 +17,5 @@ public class SupplyLossOutputDTO {
     private String imageUrl;
 
 }
+
+

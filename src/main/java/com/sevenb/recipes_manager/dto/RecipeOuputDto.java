@@ -1,5 +1,6 @@
 package com.sevenb.recipes_manager.dto;
 
+import com.sevenb.recipes_manager.entity.RecipeCategory;
 import com.sevenb.recipes_manager.entity.RecipeSupply;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class RecipeOuputDto {
     private Double quantity;
     private String description;
     private Double costRecipe;
+    private RecipeCategory recipeCategory;
     private String imageUrl;
     private Set<SupplyDto> supplies;
 }

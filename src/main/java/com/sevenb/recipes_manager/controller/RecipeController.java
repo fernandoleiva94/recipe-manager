@@ -4,6 +4,7 @@ import com.sevenb.recipes_manager.dto.DishDto;
 import com.sevenb.recipes_manager.dto.RecipeOuputDto;
 import com.sevenb.recipes_manager.dto.RecipeDto;
 import com.sevenb.recipes_manager.entity.Recipe;
+import com.sevenb.recipes_manager.entity.RecipeCategory;
 import com.sevenb.recipes_manager.service.CloudinaryService;
 import com.sevenb.recipes_manager.service.RecipeService;
 import com.sevenb.recipes_manager.service.SupplyService;
@@ -38,6 +39,9 @@ public class RecipeController {
         recipe.setName(recipeDto.getName());
         recipe.setQuantity(recipeDto.getQuantity());
         recipe.setUnit(recipeDto.getUnit());
+        recipe.setCategory(new RecipeCategory());
+        recipe.getCategory().setId(recipeDto.getCategoryId());
+
 
         if (image != null) {
             String url = cloudinaryService.upload(image);
