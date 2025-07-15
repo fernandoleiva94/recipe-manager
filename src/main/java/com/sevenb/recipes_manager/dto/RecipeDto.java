@@ -17,6 +17,7 @@ public class RecipeDto {
     private Boolean deleteImage;
     private Long categoryId;
     private Set<RecipeSupplyDto> ingredients;
+    private Long userId;
 
 
 }

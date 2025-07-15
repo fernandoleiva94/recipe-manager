@@ -7,11 +7,10 @@ import com.sevenb.recipes_manager.dto.RecipeOuputDto;
 import com.sevenb.recipes_manager.dto.RecipeSupplyDto;
 import com.sevenb.recipes_manager.dto.SupplyDto;
 import com.sevenb.recipes_manager.entity.Recipe;
+import com.sevenb.recipes_manager.entity.RecipeCategory;
 import com.sevenb.recipes_manager.entity.RecipeSupply;
 import com.sevenb.recipes_manager.entity.SupplyEntity;
-import com.sevenb.recipes_manager.repository.RecipeSupplyRepository;
-import com.sevenb.recipes_manager.repository.RecipeRepository;
-import com.sevenb.recipes_manager.repository.SupplyRepository;
+import com.sevenb.recipes_manager.repository.*;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +36,23 @@ public class RecipeService {
     @Autowired
     private RecipeSupplyRepository recipeIngredientRepository;
 
-    @Transactional
-    public Recipe createRecipe(Recipe recipe , Set<RecipeSupplyDto> recipeSupplyDtos){
+    @Autowired
+    private RecipeCategoryRepository categoryRepository;
 
-        recipeSupplyDtos.forEach( recipeSupplyDto -> {
+    @Transactional
+    public Recipe createRecipe(RecipeDto recipeDto){
+
+        Recipe recipe = new Recipe();
+        recipe.setDescription(recipeDto.getDescription());
+        recipe.setName(recipeDto.getName());
+        recipe.setQuantity(recipeDto.getQuantity());
+        recipe.setUnit(recipeDto.getUnit());
+        recipe.setCategory(categoryRepository.findById(recipeDto.getCategoryId()).orElseThrow());
+        recipe.getCategory().setId(recipeDto.getCategoryId());
+        recipe.setUserId(recipeDto.getUserId());
+
+
+        recipeDto.getIngredients().forEach( recipeSupplyDto -> {
             SupplyEntity supplyEntity = supplyRepository
                     .findById(recipeSupplyDto.getSupplyId())
                     .orElseThrow(()-> new RuntimeException("Supply not found"));

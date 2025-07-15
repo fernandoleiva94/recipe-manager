@@ -53,12 +53,10 @@ public class InventoryItemController {
         String token = authHeader.replace("Bearer ", "");
         Long userId = jwtUtil.extractUserId(token);
 
-
         if (image != null) {
             String url = cloudinaryService.upload(image);
             item.setImageUrl(url);
         }
-
 
         item.setUserId(userId);
         return service.save(item);

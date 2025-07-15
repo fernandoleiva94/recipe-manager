@@ -34,27 +34,17 @@ public class RecipeController {
     public ResponseEntity<Recipe> createRecipe(@RequestHeader("Authorization") String authHeader,
                                                @RequestPart("recipe") RecipeDto recipeDto,
                                                @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
-        Recipe recipe = new Recipe();
-        recipe.setDescription(recipeDto.getDescription());
-        recipe.setName(recipeDto.getName());
-        recipe.setQuantity(recipeDto.getQuantity());
-        recipe.setUnit(recipeDto.getUnit());
-        recipe.setCategory(new RecipeCategory());
-        recipe.getCategory().setId(recipeDto.getCategoryId());
-
 
         if (image != null) {
             String url = cloudinaryService.upload(image);
-            recipe.setImageUrl(url);
+            recipeDto.setImageUrl(url);
+
         }
-
-
         String token = authHeader.replace("Bearer ", "");
         Long userId = jwtUtil.extractUserId(token);
+        recipeDto.setUserId(userId);
 
-        recipe.setUserId(userId);
-
-        Recipe savedRecipe = recipeService.createRecipe(recipe, recipeDto.getIngredients());
+        Recipe savedRecipe = recipeService.createRecipe(recipeDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRecipe);
     }
 
