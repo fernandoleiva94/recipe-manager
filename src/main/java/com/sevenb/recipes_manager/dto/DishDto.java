@@ -13,4 +13,5 @@ public class DishDto {
     private Long userId;
     private String imageUrl;
     private Boolean deleteImage;
+    private Long categoryId;
 }

@@ -4,9 +4,11 @@ import com.sevenb.recipes_manager.dto.DishDto;
 import com.sevenb.recipes_manager.dto.DishOutpuDto;
 import com.sevenb.recipes_manager.dto.RecipeDto;
 import com.sevenb.recipes_manager.dto.SupplyDto;
+import com.sevenb.recipes_manager.entity.DishCategory;
 import com.sevenb.recipes_manager.entity.DishEntity;
 import com.sevenb.recipes_manager.entity.DishRecipe;
 import com.sevenb.recipes_manager.entity.DishSupply;
+import com.sevenb.recipes_manager.repository.DishCategoryRepository;
 import com.sevenb.recipes_manager.repository.DishRepository;
 import com.sevenb.recipes_manager.repository.RecipeRepository;
 import com.sevenb.recipes_manager.repository.SupplyRepository;
@@ -23,12 +25,15 @@ public class DishService {
     private final DishRepository dishRepository;
     private final SupplyRepository supplyRepository;
     private final RecipeRepository recipeRepository;
+    private final DishCategoryRepository categoryRepository;
+
 
     public DishService(DishRepository dishRepository , SupplyRepository supplyRepository,
-                       RecipeRepository recipeRepository) {
+                       RecipeRepository recipeRepository, DishCategoryRepository categoryRepository) {
         this.dishRepository = dishRepository;
         this.supplyRepository = supplyRepository;
         this.recipeRepository = recipeRepository;
+        this.categoryRepository = categoryRepository;
     }
 
 
@@ -52,6 +57,7 @@ public class DishService {
         dish.setProfitMargin(dishDTO.getProfitMargin());
         dish.setUserId(dishDTO.getUserId());
         dish.setImageUrl(dishDTO.getImageUrl());
+        dish.setCategory(categoryRepository.findById(dishDTO.getCategoryId()).orElseThrow());
 
         // 🔹 Guardamos Dish base
         DishEntity savedDish = dishRepository.save(dish);
@@ -97,6 +103,7 @@ public class DishService {
             dish.setDescription(dishDTO.getDescription());
             dish.setProfitMargin(dishDTO.getProfitMargin());
             dish.setImageUrl(dishDTO.getImageUrl());
+            dish.setCategory(categoryRepository.findById(dishDTO.getCategoryId()).orElseThrow());
             return dish;
         }).orElseThrow(() -> new RuntimeException("Dish not found"));
 
@@ -128,10 +135,7 @@ public class DishService {
                     return dishRecipe;
                 })
                 .collect(Collectors.toList());
-
-
         dishEntity.getRecipes().addAll(dishRecipes);
-
         return toDishDto(dishRepository.save(dishEntity));
     }
 
@@ -146,6 +150,7 @@ public class DishService {
         outpuDto.setDescription(dishEntity.getDescription());
         outpuDto.setName(dishEntity.getName());
         outpuDto.setImageUrl(dishEntity.getImageUrl());
+        outpuDto.setDishCategory(dishEntity.getCategory());
 
         Set<SupplyDto> supplies = dishEntity.getSupplies().stream()
                 .map(supply -> {

@@ -24,6 +24,8 @@ public class DishEntity {
         private Double profitMargin;
         private Long userId;
         private String imageUrl;
+        @ManyToOne(cascade = CascadeType.ALL)
+        private DishCategory category;
 
         @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL, orphanRemoval = true)
         private List<DishSupply> supplies;
