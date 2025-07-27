@@ -1,22 +1,24 @@
 package com.sevenb.recipes_manager.controller;
 
-import com.sevenb.recipes_manager.dto.DishDto;
-import com.sevenb.recipes_manager.dto.RecipeOuputDto;
-import com.sevenb.recipes_manager.dto.RecipeDto;
-import com.sevenb.recipes_manager.entity.Recipe;
-import com.sevenb.recipes_manager.entity.RecipeCategory;
+
+import com.sevenb.recipes_manager.dto.recipe.RecipeOuputDto;
+import com.sevenb.recipes_manager.dto.recipe.RecipeInputDto;
+
 import com.sevenb.recipes_manager.service.CloudinaryService;
 import com.sevenb.recipes_manager.service.RecipeService;
-import com.sevenb.recipes_manager.service.SupplyService;
+
 import com.sevenb.recipes_manager.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Objects;
 import java.util.Set;
 
@@ -25,26 +27,26 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class RecipeController {
 
-
     private final RecipeService recipeService;
     private final JwtUtil jwtUtil;
     private final CloudinaryService cloudinaryService;
 
-    @PostMapping
-    public ResponseEntity<Recipe> createRecipe(@RequestHeader("Authorization") String authHeader,
-                                               @RequestPart("recipe") RecipeDto recipeDto,
-                                               @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RecipeOuputDto> createRecipe(@RequestHeader("Authorization") String authHeader,
+                                               @RequestBody RecipeInputDto recipeInputDto) throws IOException {
 
-        if (image != null) {
-            String url = cloudinaryService.upload(image);
-            recipeDto.setImageUrl(url);
 
+        if (recipeInputDto.getImageBase64() != null && !recipeInputDto.getImageBase64().isEmpty()) {
+            byte[] imageBytes = Base64.getDecoder().decode(recipeInputDto.getImageBase64());
+            String url = cloudinaryService.upload(imageBytes);
+            recipeInputDto.setImageUrl(url);
         }
+
         String token = authHeader.replace("Bearer ", "");
         Long userId = jwtUtil.extractUserId(token);
-        recipeDto.setUserId(userId);
+        recipeInputDto.setUserId(userId);
 
-        Recipe savedRecipe = recipeService.createRecipe(recipeDto);
+        RecipeOuputDto savedRecipe = recipeService.createRecipe(recipeInputDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRecipe);
     }
 
@@ -72,12 +74,12 @@ public class RecipeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RecipeOuputDto> updateRecipe(@RequestPart("recipe") RecipeDto recipe,
-                                                       @PathVariable Long id,
-                                                       @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+    public ResponseEntity<RecipeOuputDto> updateRecipe(@RequestBody RecipeInputDto recipe,
+                                                       @PathVariable Long id) throws IOException {
 
-        if (image != null) {
-            String url = cloudinaryService.upload(image);
+        if (recipe.getImageBase64() != null && !recipe.getImageBase64().isEmpty()) {
+            byte[] imageBytes = Base64.getDecoder().decode(recipe.getImageBase64());
+            String url = cloudinaryService.upload(imageBytes);
             recipe.setImageUrl(url);
         }
         if (Boolean.TRUE.equals(recipe.getDeleteImage())) {

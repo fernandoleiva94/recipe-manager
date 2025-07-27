@@ -2,17 +2,13 @@ package com.sevenb.recipes_manager.service;
 
 
 import com.sevenb.recipes_manager.Exception.CannotDeleteSupplyException;
-import com.sevenb.recipes_manager.dto.RecipeDto;
-import com.sevenb.recipes_manager.dto.RecipeOuputDto;
-import com.sevenb.recipes_manager.dto.RecipeSupplyDto;
+import com.sevenb.recipes_manager.dto.recipe.RecipeInputDto;
+import com.sevenb.recipes_manager.dto.recipe.RecipeOuputDto;
 import com.sevenb.recipes_manager.dto.SupplyDto;
-import com.sevenb.recipes_manager.entity.Recipe;
-import com.sevenb.recipes_manager.entity.RecipeCategory;
-import com.sevenb.recipes_manager.entity.RecipeSupply;
-import com.sevenb.recipes_manager.entity.SupplyEntity;
+import com.sevenb.recipes_manager.dto.recipe.SubRecipeOutputDto;
+import com.sevenb.recipes_manager.entity.*;
 import com.sevenb.recipes_manager.repository.*;
 import jakarta.transaction.Transactional;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -20,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,90 +35,90 @@ public class RecipeService {
     private RecipeCategoryRepository categoryRepository;
 
     @Transactional
-    public Recipe createRecipe(RecipeDto recipeDto){
+    public RecipeOuputDto createRecipe(RecipeInputDto recipeInputDto) {
 
         Recipe recipe = new Recipe();
-        recipe.setDescription(recipeDto.getDescription());
-        recipe.setName(recipeDto.getName());
-        recipe.setQuantity(recipeDto.getQuantity());
-        recipe.setUnit(recipeDto.getUnit());
-        recipe.setCategory(categoryRepository.findById(recipeDto.getCategoryId()).orElseThrow());
-        recipe.getCategory().setId(recipeDto.getCategoryId());
-        recipe.setUserId(recipeDto.getUserId());
+        recipe.setDescription(recipeInputDto.getDescription());
+        recipe.setName(recipeInputDto.getName().toUpperCase(Locale.ROOT));
+        recipe.setQuantity(recipeInputDto.getQuantity());
+        recipe.setUnit(recipeInputDto.getUnit());
+        recipe.setCategory(categoryRepository.findById(recipeInputDto.getCategoryId()).orElseThrow());
+        recipe.setUserId(recipeInputDto.getUserId());
+        recipe.setImageUrl(recipeInputDto.getImageUrl());
 
-
-        recipeDto.getIngredients().forEach( recipeSupplyDto -> {
+        recipeInputDto.getIngredients().forEach(recipeSupplyDto -> {
             SupplyEntity supplyEntity = supplyRepository
                     .findById(recipeSupplyDto.getSupplyId())
-                    .orElseThrow(()-> new RuntimeException("Supply not found"));
-
-
-            recipe.setName(recipe.getName().toUpperCase(Locale.ROOT));
+                    .orElseThrow(() -> new RuntimeException("Supply id: " + recipeSupplyDto.getSupplyId() + " not found"));
             RecipeSupply recipeSupply = new RecipeSupply();
             recipeSupply.setRecipe(recipe);
             recipeSupply.setSupply(supplyEntity);
             recipeSupply.setQuantity(recipeSupplyDto.getQuantity());
-
             recipe.getRecipeSupplies().add(recipeSupply);
-
         });
 
-        return recipeRepository.save(recipe);
+        recipeInputDto.getRecipes().forEach(recipeRecipeDto -> {
+            Recipe subRecipe = recipeRepository
+                    .findById(recipeRecipeDto.getRecipeId())
+                    .orElseThrow(() -> new RuntimeException("Supply not found"));
+            RecipeRecipeRelationEntity recipeRecipeRelation = new RecipeRecipeRelationEntity();
+
+            recipeRecipeRelation.setRecipe(recipe);
+            recipeRecipeRelation.setSubRecipe(subRecipe);
+            recipeRecipeRelation.setQuantity(recipeRecipeDto.getQuantity());
+            recipe.getRecipeRecipeRelations().add(recipeRecipeRelation);
+        });
+
+        return toRecipeDTO(recipeRepository.save(recipe));
     }
 
     public Set<RecipeOuputDto> getAllRecipes(Long userId) {
         Set<RecipeOuputDto> recipeOuputDtos = new HashSet<>();
         recipeRepository.findAllByUserId(userId).forEach(l
-                -> recipeOuputDtos.add(toRecipeDTO(l)));
+                -> recipeOuputDtos.add(toRecipeDTOBasic(l)));
         return recipeOuputDtos;
     }
 
     public RecipeOuputDto getRecipeById(Long id) {
-        Recipe recipe = recipeRepository.findById(id).orElseThrow(()-> new RuntimeException("Recipe not found"));
+        Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new RuntimeException("Recipe not found"));
         return toRecipeDTO(recipe);
     }
 
     @Transactional
-    public RecipeOuputDto updateRecipe(RecipeDto recipeDto, Long id){
+    public RecipeOuputDto updateRecipe(RecipeInputDto recipeInputDto, Long id) {
         DecimalFormat df = new DecimalFormat("#.00");
-        Recipe recipe = recipeRepository.findById(id).orElseThrow(()-> new RuntimeException("Recipe not found"));
-            Set<RecipeSupply> recipeSupplies = new HashSet<>();
-            recipe.setId(id);
-            recipe.setName(recipeDto.getName().toUpperCase(Locale.ROOT));
-            recipe.setDescription(recipeDto.getDescription());
-            recipe.setQuantity(recipeDto.getQuantity());
-            recipe.setUnit(recipeDto.getUnit());
-            recipe.getCategory().setId(recipeDto.getCategoryId());
-            recipe.setImageUrl(recipeDto.getImageUrl());
-            recipe.getRecipeSupplies().clear();
+        Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new RuntimeException("Recipe not found"));
+        recipe.setId(id);
+        recipe.setName(recipeInputDto.getName().toUpperCase(Locale.ROOT));
+        recipe.setDescription(recipeInputDto.getDescription());
+        recipe.setQuantity(recipeInputDto.getQuantity());
+        recipe.setUnit(recipeInputDto.getUnit());
+        recipe.getCategory().setId(recipeInputDto.getCategoryId());
+        recipe.setImageUrl(recipeInputDto.getImageUrl());
+        recipe.getRecipeSupplies().clear();
 
-            recipeDto.getIngredients().forEach( recipeSupplyDto -> {
-                SupplyEntity supplyEntity = supplyRepository
-                        .findById(recipeSupplyDto.getSupplyId())
-                        .orElseThrow(()-> new RuntimeException("Supply not found"));
+        recipeInputDto.getIngredients().forEach(recipeSupplyDto -> {
+            SupplyEntity supplyEntity = supplyRepository
+                    .findById(recipeSupplyDto.getSupplyId())
+                    .orElseThrow(() -> new RuntimeException("Supply not found"));
 
+            RecipeSupply recipeSupply = new RecipeSupply();
+            recipeSupply.setRecipe(recipe);
+            recipeSupply.setSupply(supplyEntity);
+            recipeSupply.setQuantity(recipeSupplyDto.getQuantity());
+            recipe.getRecipeSupplies().add(recipeSupply);
+        });
 
-                RecipeSupply recipeSupply = new RecipeSupply();
-                recipeSupply.setRecipe(recipe);
-                recipeSupply.setSupply(supplyEntity);
-                recipeSupply.setQuantity(recipeSupplyDto.getQuantity());
-
-                recipe.getRecipeSupplies().add(recipeSupply);
-
-            });
-
-            recipeRepository.save(recipe);
+        recipeRepository.save(recipe);
         return toRecipeDTO(recipe);
 
     }
 
 
-
-
     public void deleteRecipe(Long id) {
-        try{
+        try {
             recipeRepository.deleteById(id);
-        }catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new CannotDeleteSupplyException("El insumo está siendo ocupado por algún producto final. Por favor, elimínalos primero.");
         }
 
@@ -144,7 +139,6 @@ public class RecipeService {
         Set<SupplyDto> supplies = recipe.getRecipeSupplies().stream()
                 .map(supply -> {
                     SupplyDto supplyDTO = new SupplyDto();
-                    supplyDTO.setId(supply.getId());
                     supplyDTO.setName(supply.getSupply().getName());
                     supplyDTO.setId(supply.getSupply().getId());
                     supplyDTO.setQuantity(supply.getQuantity());
@@ -155,7 +149,37 @@ public class RecipeService {
                 .collect(Collectors.toSet());
         dto.setSupplies(supplies);
 
+
+        Set<SubRecipeOutputDto> subRecipeOutputDtos = recipe.getRecipeRecipeRelations().stream()
+                .map(subRecipe -> {
+                    SubRecipeOutputDto recipeOutputDto = new SubRecipeOutputDto();
+                    recipeOutputDto.setName(subRecipe.getSubRecipe().getName());
+                    recipeOutputDto.setId(subRecipe.getSubRecipe().getId());
+                    recipeOutputDto.setQuantity(subRecipe.getQuantity());
+                    recipeOutputDto.setCost(subRecipe.cost());
+                    recipeOutputDto.setUnit(subRecipe.getSubRecipe().getUnit());
+                    return recipeOutputDto;
+                })
+                .collect(Collectors.toSet());
+        dto.setRecipes(subRecipeOutputDtos);
+
         return dto;
     }
+
+
+    public RecipeOuputDto toRecipeDTOBasic(Recipe recipe) {
+        RecipeOuputDto dto = new RecipeOuputDto();
+        dto.setId(recipe.getId());
+        dto.setName(recipe.getName());
+        dto.setQuantity(recipe.getQuantity());
+        dto.setUnit(recipe.getUnit());
+        dto.setCostRecipe(recipe.cost());
+        dto.setImageUrl(recipe.getImageUrl());
+        dto.setDescription(recipe.getDescription());
+        dto.setRecipeCategory(recipe.getCategory());
+
+        return dto;
+    }
+
 
 }

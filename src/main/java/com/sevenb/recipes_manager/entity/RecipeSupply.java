@@ -57,6 +57,7 @@ public class RecipeSupply {
 
 
     public Double cost(){
-        return this.getQuantity() / supply.getQuantity() * getSupply().getPrice();
+        double cost = this.getQuantity() / supply.getQuantity() * getSupply().getPrice();
+        return Math.round(cost * 100.0) / 100.0;
     }
 }

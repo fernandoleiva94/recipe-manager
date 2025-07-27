@@ -1,9 +1,9 @@
 package com.sevenb.recipes_manager.dto;
 
+import com.sevenb.recipes_manager.dto.recipe.RecipeInputDto;
 import com.sevenb.recipes_manager.entity.DishCategory;
 import lombok.Data;
 
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -19,7 +19,7 @@ public class DishOutpuDto {
     private Double price;
     private String imageUrl;
 
-    private Set<RecipeDto> recipe;
+    private Set<RecipeInputDto> recipe;
     private Set<SupplyDto> supplies;
     private DishCategory dishCategory;
 

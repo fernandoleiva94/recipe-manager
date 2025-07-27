@@ -1,4 +1,4 @@
-package com.sevenb.recipes_manager.dto;
+package com.sevenb.recipes_manager.dto.recipe;
 
 import lombok.Data;
 

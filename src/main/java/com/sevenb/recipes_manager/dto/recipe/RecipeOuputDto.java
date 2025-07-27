@@ -1,10 +1,9 @@
-package com.sevenb.recipes_manager.dto;
+package com.sevenb.recipes_manager.dto.recipe;
 
+import com.sevenb.recipes_manager.dto.SupplyDto;
 import com.sevenb.recipes_manager.entity.RecipeCategory;
-import com.sevenb.recipes_manager.entity.RecipeSupply;
 import lombok.Data;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -20,4 +19,5 @@ public class RecipeOuputDto {
     private RecipeCategory recipeCategory;
     private String imageUrl;
     private Set<SupplyDto> supplies;
+    private Set<SubRecipeOutputDto> recipes;
 }

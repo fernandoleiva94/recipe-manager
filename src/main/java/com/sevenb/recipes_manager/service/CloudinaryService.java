@@ -21,4 +21,10 @@ public class CloudinaryService {
         Map<?,?> result = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
         return (String) result.get("secure_url");
     }
+
+    // Nuevo método para subir desde byte[]
+    public String upload(byte[] bytes) throws IOException {
+        Map<?, ?> result = cloudinary.uploader().upload(bytes, ObjectUtils.emptyMap());
+        return (String) result.get("secure_url");
+    }
 }

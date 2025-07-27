@@ -1,5 +1,6 @@
 package com.sevenb.recipes_manager.dto;
 
+import com.sevenb.recipes_manager.dto.recipe.RecipeInputDto;
 import lombok.Data;
 import java.util.List;
 
@@ -8,7 +9,7 @@ public class DishDto {
     private String name;
     private String description;
     private List<SupplyDto> supplies;
-    private List<RecipeDto> recipes;
+    private List<RecipeInputDto> recipes;
     private Double profitMargin;
     private Long userId;
     private String imageUrl;

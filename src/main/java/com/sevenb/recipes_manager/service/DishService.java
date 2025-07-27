@@ -2,9 +2,8 @@ package com.sevenb.recipes_manager.service;
 
 import com.sevenb.recipes_manager.dto.DishDto;
 import com.sevenb.recipes_manager.dto.DishOutpuDto;
-import com.sevenb.recipes_manager.dto.RecipeDto;
+import com.sevenb.recipes_manager.dto.recipe.RecipeInputDto;
 import com.sevenb.recipes_manager.dto.SupplyDto;
-import com.sevenb.recipes_manager.entity.DishCategory;
 import com.sevenb.recipes_manager.entity.DishEntity;
 import com.sevenb.recipes_manager.entity.DishRecipe;
 import com.sevenb.recipes_manager.entity.DishSupply;
@@ -13,7 +12,6 @@ import com.sevenb.recipes_manager.repository.DishRepository;
 import com.sevenb.recipes_manager.repository.RecipeRepository;
 import com.sevenb.recipes_manager.repository.SupplyRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -166,16 +164,16 @@ public class DishService {
 
         outpuDto.setSupplies(supplies);
 
-        Set<RecipeDto> recipes = dishEntity.getRecipes().stream()
+        Set<RecipeInputDto> recipes = dishEntity.getRecipes().stream()
                 .map(recipe ->{
-                    RecipeDto recipeDto = new RecipeDto();
-                    recipeDto.setId(recipe.getRecipe().getId());
-                    recipeDto.setDescription(recipe.getRecipe().getDescription());
-                    recipeDto.setName(recipe.getRecipe().getName());
-                    recipeDto.setCostTotal(recipe.cost());
-                    recipeDto.setUnit(recipe.getRecipe().getUnit());
-                    recipeDto.setQuantity(recipe.getQuantity());
-                    return recipeDto;
+                    RecipeInputDto recipeInputDto = new RecipeInputDto();
+                    recipeInputDto.setId(recipe.getRecipe().getId());
+                    recipeInputDto.setDescription(recipe.getRecipe().getDescription());
+                    recipeInputDto.setName(recipe.getRecipe().getName());
+                    recipeInputDto.setCostTotal(recipe.cost());
+                    recipeInputDto.setUnit(recipe.getRecipe().getUnit());
+                    recipeInputDto.setQuantity(recipe.getQuantity());
+                    return recipeInputDto;
                 }).collect(Collectors.toSet());
 
         outpuDto.setRecipe(recipes);

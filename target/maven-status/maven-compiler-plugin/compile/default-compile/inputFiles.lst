@@ -1,35 +1,58 @@
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/repository/DishSupplyRepository.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/dto/CategoryDto.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/entity/DishRecipe.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/controller/DishController.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/dto/SupplyDto.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/repository/DishRepository.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/entity/SupplyEntity.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/repository/RecipeRepository.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/dto/DishOutpuDto.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/repository/RecipeSupplyRepository.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/configuration/ModelMapperConfig.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/controller/SupplyController.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/entity/RecipeSupply.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/dto/RecipeOuputDto.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/service/SupplyService.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/service/RecipeService.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/mapper/SupplyMapper.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/entity/DishEntity.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/service/DishService.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/entity/Category.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/entity/Recipe.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/entity/DishSupply.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/dto/RecipeDto.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/repository/SupplyRepository.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/repository/DishRecipeRepository.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/configuration/WebConfig.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/service/DishSupplyService.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/service/DishRecipeService.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/service/CategoryService.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/dto/RecipeSupplyDto.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/RecipesManagerApplication.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/dto/DishDto.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/controller/CategoryController.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/repository/CategoryRepository.java
-/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/recipes-manager/src/main/java/com/sevenb/recipes_manager/controller/RecipeController.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/Exception/CannotDeleteSupplyException.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/Exception/GlobalExceptionHandler.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/RecipesManagerApplication.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/configuration/ModelMapperConfig.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/configuration/WebConfig.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/controller/CategoryController.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/controller/DishCategoryController.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/controller/DishController.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/controller/InventoryItemController.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/controller/Prueba.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/controller/RecipeCategoryController.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/controller/RecipeController.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/controller/SupplyController.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/dto/CategoryDto.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/dto/DishDto.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/dto/DishOutpuDto.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/dto/LossDTO.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/dto/RecipeDto.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/dto/RecipeOuputDto.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/dto/RecipeRecipeDto.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/dto/RecipeSupplyDto.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/dto/SupplyDto.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/dto/SupplyLossOutputDTO.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/entity/Category.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/entity/DishCategory.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/entity/DishEntity.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/entity/DishRecipe.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/entity/DishSupply.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/entity/InventoryItem.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/entity/Recipe.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/entity/RecipeCategory.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/entity/RecipeRecipeRelationEntity.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/entity/RecipeSupply.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/entity/SupplyEntity.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/entity/SupplyLoss.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/repository/CategoryRepository.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/repository/DishCategoryRepository.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/repository/DishRecipeRepository.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/repository/DishRepository.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/repository/DishSupplyRepository.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/repository/InventoryItemRepository.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/repository/LossRepository.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/repository/RecipeCategoryRepository.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/repository/RecipeRepository.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/repository/RecipeSupplyRepository.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/repository/SupplyRepository.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/service/CategoryService.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/service/CloudinaryService.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/service/DishCategoryService.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/service/DishRecipeService.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/service/DishService.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/service/DishSupplyService.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/service/InventoryItemService.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/service/LossService.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/service/RecipeCategoryService.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/service/RecipeService.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/service/SupplyService.java
+/home/fernando/Documents/Repositorios/PERSONAL/recipe-manager/src/main/java/com/sevenb/recipes_manager/util/JwtUtil.java
