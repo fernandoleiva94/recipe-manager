@@ -2,13 +2,12 @@ package com.sevenb.recipes_manager.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Data;
 
 @Entity
 @Table(name = "category")
 @Data
-public class Category {
+public class SupplyCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

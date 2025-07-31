@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -86,22 +85,24 @@ public class RecipeService {
 
     @Transactional
     public RecipeOuputDto updateRecipe(RecipeInputDto recipeInputDto, Long id) {
-        DecimalFormat df = new DecimalFormat("#.00");
-        Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new RuntimeException("Recipe not found"));
-        recipe.setId(id);
+        Recipe recipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Recipe not found"));
         recipe.setName(recipeInputDto.getName().toUpperCase(Locale.ROOT));
         recipe.setDescription(recipeInputDto.getDescription());
         recipe.setQuantity(recipeInputDto.getQuantity());
         recipe.setUnit(recipeInputDto.getUnit());
-        recipe.getCategory().setId(recipeInputDto.getCategoryId());
+        // Mejor manejo de categoría: siempre buscar y setear la entidad
+        RecipeCategory category = categoryRepository.findById(recipeInputDto.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+        recipe.setCategory(category);
         recipe.setImageUrl(recipeInputDto.getImageUrl());
-        recipe.getRecipeSupplies().clear();
 
+        // Limpiar y actualizar ingredientes
+        recipe.getRecipeSupplies().clear();
         recipeInputDto.getIngredients().forEach(recipeSupplyDto -> {
             SupplyEntity supplyEntity = supplyRepository
                     .findById(recipeSupplyDto.getSupplyId())
                     .orElseThrow(() -> new RuntimeException("Supply not found"));
-
             RecipeSupply recipeSupply = new RecipeSupply();
             recipeSupply.setRecipe(recipe);
             recipeSupply.setSupply(supplyEntity);
@@ -109,9 +110,21 @@ public class RecipeService {
             recipe.getRecipeSupplies().add(recipeSupply);
         });
 
+        // Limpiar y actualizar sub-recetas
+        recipe.getRecipeRecipeRelations().clear();
+        recipeInputDto.getRecipes().forEach(recipeRecipeDto -> {
+            Recipe subRecipe = recipeRepository
+                    .findById(recipeRecipeDto.getRecipeId())
+                    .orElseThrow(() -> new RuntimeException("Sub-recipe not found"));
+            RecipeRecipeRelationEntity relation = new RecipeRecipeRelationEntity();
+            relation.setRecipe(recipe);
+            relation.setSubRecipe(subRecipe);
+            relation.setQuantity(recipeRecipeDto.getQuantity());
+            recipe.getRecipeRecipeRelations().add(relation);
+        });
+
         recipeRepository.save(recipe);
         return toRecipeDTO(recipe);
-
     }
 
 
@@ -173,7 +186,7 @@ public class RecipeService {
         dto.setName(recipe.getName());
         dto.setQuantity(recipe.getQuantity());
         dto.setUnit(recipe.getUnit());
-        dto.setCostRecipe(recipe.cost());
+        //dto.setCostRecipe(recipe.cost());
         dto.setImageUrl(recipe.getImageUrl());
         dto.setDescription(recipe.getDescription());
         dto.setRecipeCategory(recipe.getCategory());

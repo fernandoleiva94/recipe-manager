@@ -2,7 +2,6 @@ package com.sevenb.recipes_manager.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,7 +32,7 @@ public class SupplyEntity {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    private SupplyCategory category;
 
 }
 

@@ -2,14 +2,13 @@ package com.sevenb.recipes_manager.service;
 
 
 import com.sevenb.recipes_manager.dto.CategoryDto;
-import com.sevenb.recipes_manager.entity.Category;
+import com.sevenb.recipes_manager.entity.SupplyCategory;
 import com.sevenb.recipes_manager.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,7 +24,7 @@ public class CategoryService {
     }
 
     public CategoryDto getCategoryById(Long id) {
-        com.sevenb.recipes_manager.entity.Category category = categoryRepository.findById(id)
+        SupplyCategory category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
         return new CategoryDto(category.getId(), category.getDescription());
     }
@@ -35,7 +34,7 @@ public class CategoryService {
         if (categoryRepository.findByDescriptionAndUserId(categoryDTO.getDescription(), categoryDTO.getUserId()).isPresent()) {
             throw new RuntimeException("Category already exists");
         }
-        Category category = new Category();
+        SupplyCategory category = new SupplyCategory();
         category.setDescription(categoryDTO.getDescription());
         category.setUserId(categoryDTO.getUserId());
         category = categoryRepository.save(category);
@@ -44,7 +43,7 @@ public class CategoryService {
 
     @Transactional
     public CategoryDto updateCategory(Long id, CategoryDto categoryDTO) {
-        Category category = categoryRepository.findById(id)
+        SupplyCategory category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
         category.setDescription(categoryDTO.getDescription());
