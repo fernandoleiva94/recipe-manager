@@ -2,6 +2,7 @@ package com.sevenb.recipes_manager.controller;
 
 import com.sevenb.recipes_manager.dto.LossDTO;
 import com.sevenb.recipes_manager.dto.SupplyLossOutputDTO;
+import com.sevenb.recipes_manager.entity.StockMovement;
 import com.sevenb.recipes_manager.entity.SupplyLoss;
 import com.sevenb.recipes_manager.entity.SupplyEntity;
 import com.sevenb.recipes_manager.service.CloudinaryService;
@@ -102,6 +103,43 @@ public class SupplyController {
 
         return lossService.findByLossDateBetween(from, to);
     }
+
+    @PutMapping("/{id}/stock/increase")
+    public ResponseEntity<SupplyEntity> increaseStock(
+            @PathVariable Long id,
+            @RequestParam double amount,
+            @RequestParam(required = false, defaultValue = "Compra") String reason
+    ) {
+        return ResponseEntity.of(supplyService.adjustStock(id, amount, "ENTRADA", reason));
+    }
+
+    @PutMapping("/{id}/stock/decrease")
+    public ResponseEntity<SupplyEntity> decreaseStock(
+            @PathVariable Long id,
+            @RequestParam double amount,
+            @RequestParam(required = false, defaultValue = "Consumo") String reason
+    ) {
+        return ResponseEntity.of(supplyService.adjustStock(id, -amount, "SALIDA", reason));
+    }
+
+    @GetMapping("/low-stock")
+    public List<SupplyEntity> getLowStock() {
+        return supplyService.getLowStockSupplies();
+    }
+
+    @GetMapping("/{id}/movements")
+    public List<StockMovement> getMovements(@PathVariable Long id) {
+        return supplyService.getMovementsBySupply(id);
+    }
+
+    @GetMapping("/all-stock")
+    public List<SupplyEntity> getAllSuppliesCheckStock(@RequestHeader("Authorization") String authHeader,
+                                                       @RequestParam(required = false, defaultValue = "true") boolean checkStock) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtUtil.extractUserId(token);
+        return supplyService.getAllSuppliesCheckStock(userId, checkStock);
+    }
+
 
 
 }

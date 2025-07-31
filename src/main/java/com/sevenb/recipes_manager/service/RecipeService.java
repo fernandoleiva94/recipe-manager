@@ -1,6 +1,5 @@
 package com.sevenb.recipes_manager.service;
 
-
 import com.sevenb.recipes_manager.Exception.CannotDeleteSupplyException;
 import com.sevenb.recipes_manager.dto.recipe.RecipeInputDto;
 import com.sevenb.recipes_manager.dto.recipe.RecipeOuputDto;
@@ -9,7 +8,6 @@ import com.sevenb.recipes_manager.dto.recipe.SubRecipeOutputDto;
 import com.sevenb.recipes_manager.entity.*;
 import com.sevenb.recipes_manager.repository.*;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -21,17 +19,18 @@ import java.util.stream.Collectors;
 @Service
 public class RecipeService {
 
-    @Autowired
-    private RecipeRepository recipeRepository;
 
-    @Autowired
-    private SupplyRepository supplyRepository;
+    private final RecipeRepository recipeRepository;
+    private final SupplyRepository supplyRepository;
+    private final RecipeCategoryRepository categoryRepository;
 
-    @Autowired
-    private RecipeSupplyRepository recipeIngredientRepository;
+    public RecipeService(RecipeRepository recipeRepository, SupplyRepository supplyRepository,
+                         RecipeCategoryRepository categoryRepository) {
+        this.recipeRepository = recipeRepository;
+        this.supplyRepository = supplyRepository;
+        this.categoryRepository = categoryRepository;
+    }
 
-    @Autowired
-    private RecipeCategoryRepository categoryRepository;
 
     @Transactional
     public RecipeOuputDto createRecipe(RecipeInputDto recipeInputDto) {

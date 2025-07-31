@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 
@@ -25,6 +26,14 @@ public class SupplyEntity {
     private String description;
     private Double wastage; //merma
     private Long userId;
+
+    private Double stock;      // cantidad actual en stock
+    private Double minStock;   // 🔸 mínimo para alertar
+    private Double maxStock;   // 🔸 máximo sugerido para no sobrecomprar
+    private boolean checkStock; // 🔸 si se debe controlar el stock
+
+    private LocalDateTime lastRestocked; // 📆 fecha de última reposición
+
 
     @OneToMany(mappedBy = "supply", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore

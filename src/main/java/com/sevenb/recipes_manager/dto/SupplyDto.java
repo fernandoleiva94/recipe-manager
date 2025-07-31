@@ -11,4 +11,5 @@ public class SupplyDto {
     private Double quantity;
     private String unit;
 
+
 }

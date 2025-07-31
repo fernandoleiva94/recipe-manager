@@ -3,9 +3,13 @@ package com.sevenb.recipes_manager.controller;
 
 import com.sevenb.recipes_manager.dto.recipe.RecipeOuputDto;
 import com.sevenb.recipes_manager.dto.recipe.RecipeInputDto;
+import com.sevenb.recipes_manager.dto.recipe.ProductionRequestDto;
+import com.sevenb.recipes_manager.dto.recipe.RecipeProductionDto;
 
+import com.sevenb.recipes_manager.entity.RecipeProduction;
 import com.sevenb.recipes_manager.service.CloudinaryService;
 import com.sevenb.recipes_manager.service.RecipeService;
+import com.sevenb.recipes_manager.service.RecipeProductionService;
 
 import com.sevenb.recipes_manager.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -30,6 +35,7 @@ public class RecipeController {
     private final RecipeService recipeService;
     private final JwtUtil jwtUtil;
     private final CloudinaryService cloudinaryService;
+    private final RecipeProductionService recipeProductionService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RecipeOuputDto> createRecipe(@RequestHeader("Authorization") String authHeader,
@@ -89,6 +95,26 @@ public class RecipeController {
 
         RecipeOuputDto savedRecipe = recipeService.updateRecipe(recipe,id);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRecipe);
+    }
+
+    // --- Endpoints de producción de recetas ---
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, value = "/production")
+    public ResponseEntity<RecipeProductionDto> registerProduction(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody ProductionRequestDto productionRequestDto) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtUtil.extractUserId(token);
+        RecipeProduction production = recipeProductionService.registerProduction(productionRequestDto, userId);
+        RecipeProductionDto dto = recipeProductionService.toDto(production);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+    }
+
+    @GetMapping("/production")
+    public ResponseEntity<List<RecipeProductionDto>> getAllProductionsByUser(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtUtil.extractUserId(token);
+        List<RecipeProductionDto> productions = recipeProductionService.getAllProductionsByUserDto(userId);
+        return ResponseEntity.ok(productions);
     }
 
 }
