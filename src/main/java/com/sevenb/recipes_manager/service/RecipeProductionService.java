@@ -4,6 +4,7 @@ import com.sevenb.recipes_manager.dto.recipe.ProductionRequestDto;
 import com.sevenb.recipes_manager.dto.recipe.RecipeProductionDto;
 import com.sevenb.recipes_manager.entity.Recipe;
 import com.sevenb.recipes_manager.entity.RecipeProduction;
+import com.sevenb.recipes_manager.entity.SupplyEntity;
 import com.sevenb.recipes_manager.repository.RecipeProductionRepository;
 import com.sevenb.recipes_manager.repository.RecipeRepository;
 import jakarta.transaction.Transactional;
@@ -26,16 +27,35 @@ public class RecipeProductionService {
     public RecipeProduction registerProduction(ProductionRequestDto dto, Long userId) {
         Recipe recipe = recipeRepository.findById(dto.getRecipeId())
                 .orElseThrow(() -> new RuntimeException("Recipe not found"));
+        double recipeQuantity = dto.getRecipeQuantity() != null ? dto.getRecipeQuantity() : 1.0;
+        // Calcular cantidad producida y esperada en base a recipeQuantity
+        Double quantityProduced = dto.getQuantityProduced();
+        Double expectedQuantity = recipe.getQuantity() * recipeQuantity;
+        Double yield = (expectedQuantity > 0) ? quantityProduced / expectedQuantity : null;
+
         RecipeProduction production = new RecipeProduction();
         production.setRecipe(recipe);
-        production.setQuantityProduced(dto.getQuantityProduced());
+        production.setQuantityProduced(quantityProduced);
         production.setUnit(recipe.getUnit());
         production.setProductionDate(LocalDateTime.now());
         production.setUserId(userId);
-        production.setExpectedQuantity(dto.getExpectedQuantity());
-        production.setYield(dto.getExpectedQuantity() != null && dto.getExpectedQuantity() > 0 ? dto.getQuantityProduced() / dto.getExpectedQuantity() : null);
+        production.setExpectedQuantity(expectedQuantity);
+        production.setYield(yield);
         production.setCost(dto.getCost());
         production.setNotes(dto.getNotes());
+
+        // Descontar stock de insumos con checkStock=true en base a recipeQuantity
+        if (recipe.getRecipeSupplies() != null) {
+            for (var recipeSupply : recipe.getRecipeSupplies()) {
+                SupplyEntity supply = recipeSupply.getSupply();
+                if (supply.isCheckStock() && supply.getStock() != null) {
+                    double cantidadDescontar = recipeSupply.getQuantity() * recipeQuantity;
+                    double nuevoStock = supply.getStock() - cantidadDescontar;
+                    supply.setStock(nuevoStock);
+                }
+            }
+        }
+
         return recipeProductionRepository.save(production);
     }
 
