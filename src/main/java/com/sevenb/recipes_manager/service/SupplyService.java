@@ -79,7 +79,7 @@ try{
             if (s.getStock() == null) {
                 s.setStock(0.0);
             }
-            double newStock = s.getStock() + quantity;
+            double newStock = Math.round(s.getStock() + quantity);
             if (newStock < 0) throw new IllegalArgumentException("Stock insuficiente");
             s.setStock(newStock);
             if (type.equalsIgnoreCase("ENTRADA")) {

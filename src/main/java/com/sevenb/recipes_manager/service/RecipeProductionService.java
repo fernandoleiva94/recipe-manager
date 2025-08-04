@@ -37,12 +37,13 @@ public class RecipeProductionService {
         production.setRecipe(recipe);
         production.setQuantityProduced(quantityProduced);
         production.setUnit(recipe.getUnit());
-        production.setProductionDate(LocalDateTime.now());
+        production.setProductionDate(dto.getProductionDate());
         production.setUserId(userId);
         production.setExpectedQuantity(expectedQuantity);
         production.setYield(yield);
         production.setCost(dto.getCost());
         production.setNotes(dto.getNotes());
+        production.setExpirationDate(dto.getExpirationDate());
 
         // Descontar stock de insumos con checkStock=true en base a recipeQuantity
         if (recipe.getRecipeSupplies() != null) {

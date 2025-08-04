@@ -25,6 +25,7 @@ public class RecipeProduction {
     private Double expectedQuantity; // cantidad teórica según receta
     private Double yield; // rendimiento real (quantityProduced / expectedQuantity)
     private Double cost; // costo real de la producción
-    private String notes; // observaciones, mermas, etc.
+    private String notes;
+    private LocalDateTime expirationDate; // observaciones, mermas, etc.
 }
 
