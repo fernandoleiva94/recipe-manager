@@ -108,5 +108,29 @@ try{
         return movementRepository.findBySupplyId(supplyId);
     }
 
+    public List<SupplyEntity> getLowStockSuppliesByUserAndCheckStock(Long userId) {
+        // Devuelve supplies del usuario con checkStock=true y stock <= minStock
+        return supplyRepository.findAllByUserId(userId).stream()
+                .filter(s -> Boolean.TRUE.equals(s.isCheckStock()) && s.getStock() != null && s.getMinStock() != null && s.getStock() <= s.getMinStock())
+                .toList();
+    }
+
+    public List<SupplyEntity> getLowStockSuppliesByUserAndCheckStockAndDate(Long userId, String from, String to) {
+        // Filtra supplies por userId, checkStock=true, stock <= minStock y lastRestocked entre from y to
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        java.time.LocalDateTime fromDate = java.time.LocalDate.parse(from, formatter).atStartOfDay();
+        java.time.LocalDateTime toDate = java.time.LocalDate.parse(to, formatter).atTime(23, 59, 59);
+        return supplyRepository.findAllByUserId(userId).stream()
+                .filter(s -> Boolean.TRUE.equals(s.isCheckStock())
+                        && s.getStock() != null
+                        && s.getMinStock() != null
+                        && s.getStock() <= s.getMinStock()
+                        && s.getLastRestocked() != null
+                        && (s.getLastRestocked().isEqual(fromDate) || s.getLastRestocked().isAfter(fromDate))
+                        && (s.getLastRestocked().isEqual(toDate) || s.getLastRestocked().isBefore(toDate))
+                )
+                .toList();
+    }
+
 
 }

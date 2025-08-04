@@ -13,6 +13,7 @@ public class SupplyLossOutputDTO {
     private String description;
     private LocalDate lossDate;
     private String SupplyName;
+    private Long supplyId;
     private String unit;
     private String imageUrl;
 

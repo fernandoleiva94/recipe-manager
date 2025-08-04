@@ -50,6 +50,7 @@ public class LossService {
         dto.setQuantity(supplyLoss.getLostQuantity());
         dto.setDescription(supplyLoss.getDescription());
         dto.setSupplyName(supplyLoss.getSupply().getName());
+        dto.setSupplyId(supplyLoss.getSupply().getId());
         dto.setLossDate(supplyLoss.getLossDate());
         dto.setUnit(supplyLoss.getSupply().getUnit());
         dto.setImageUrl(supplyLoss.getImageUrl());

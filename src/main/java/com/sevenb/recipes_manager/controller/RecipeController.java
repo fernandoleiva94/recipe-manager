@@ -1,15 +1,17 @@
 package com.sevenb.recipes_manager.controller;
 
-
 import com.sevenb.recipes_manager.dto.recipe.RecipeOuputDto;
 import com.sevenb.recipes_manager.dto.recipe.RecipeInputDto;
 import com.sevenb.recipes_manager.dto.recipe.ProductionRequestDto;
 import com.sevenb.recipes_manager.dto.recipe.RecipeProductionDto;
+import com.sevenb.recipes_manager.dto.recipe.RecipeLossDto;
 
+import com.sevenb.recipes_manager.entity.RecipeLoss;
 import com.sevenb.recipes_manager.entity.RecipeProduction;
 import com.sevenb.recipes_manager.service.CloudinaryService;
 import com.sevenb.recipes_manager.service.RecipeService;
 import com.sevenb.recipes_manager.service.RecipeProductionService;
+import com.sevenb.recipes_manager.service.RecipeLossService;
 
 import com.sevenb.recipes_manager.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -36,6 +37,7 @@ public class RecipeController {
     private final JwtUtil jwtUtil;
     private final CloudinaryService cloudinaryService;
     private final RecipeProductionService recipeProductionService;
+    private final RecipeLossService recipeLossService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RecipeOuputDto> createRecipe(@RequestHeader("Authorization") String authHeader,
@@ -115,6 +117,41 @@ public class RecipeController {
         Long userId = jwtUtil.extractUserId(token);
         List<RecipeProductionDto> productions = recipeProductionService.getAllProductionsByUserDto(userId);
         return ResponseEntity.ok(productions);
+    }
+
+    // --- Endpoints de pérdidas de recetas ---
+    @PostMapping(value = "/loss", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RecipeLossDto> registerLoss(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody RecipeLossDto lossRequestDto) throws IOException {
+
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtUtil.extractUserId(token);
+        RecipeLoss loss = recipeLossService.registerLoss(
+                lossRequestDto.getRecipeId(),
+                lossRequestDto.getQuantityLost(),
+                userId,
+                lossRequestDto.getNotes(),
+                lossRequestDto.getImageBase64()
+        );
+        RecipeLossDto dto = recipeLossService.toDto(loss);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+    }
+
+    @GetMapping("/loss")
+    public ResponseEntity<List<RecipeLossDto>> getAllLossesByUser(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestParam(value = "from", required = false) String from,
+            @RequestParam(value = "to", required = false) String to) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtUtil.extractUserId(token);
+        List<RecipeLossDto> losses;
+        if (from != null && to != null) {
+            losses = recipeLossService.getAllLossesByUserAndDateRangeDto(userId, from, to);
+        } else {
+            losses = recipeLossService.getAllLossesByUserDto(userId);
+        }
+        return ResponseEntity.ok(losses);
     }
 
 }

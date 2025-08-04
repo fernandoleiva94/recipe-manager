@@ -123,8 +123,15 @@ public class SupplyController {
     }
 
     @GetMapping("/low-stock")
-    public List<SupplyEntity> getLowStock() {
-        return supplyService.getLowStockSupplies();
+    public List<SupplyEntity> getLowStock(@RequestHeader("Authorization") String authHeader,
+                                          @RequestParam(value = "from", required = false) String from,
+                                          @RequestParam(value = "to", required = false) String to) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtUtil.extractUserId(token);
+        if (from != null && to != null) {
+            return supplyService.getLowStockSuppliesByUserAndCheckStockAndDate(userId, from, to);
+        }
+        return supplyService.getLowStockSuppliesByUserAndCheckStock(userId);
     }
 
     @GetMapping("/{id}/movements")
