@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -22,7 +21,7 @@ public class SupplyLoss {
     private SupplyEntity supply;
 
     @Column(name = "lost_quantity", nullable = false)
-    private BigDecimal lostQuantity;
+    private Double lostQuantity;
 
     private String description;
 

@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Setter
 public class LossDTO {
     private Long supplyId;
-    private BigDecimal lostQuantity;
+    private Double lostQuantity;
     private String description;
     private LocalDate lossDate;
     private String imageUrl;

@@ -24,13 +24,13 @@ public class DishEntity {
         private Double profitMargin;
         private Long userId;
         private String imageUrl;
-        @ManyToOne(cascade = CascadeType.ALL)
+        @ManyToOne(cascade = CascadeType.ALL,fetch =  FetchType.LAZY)
         private DishCategory category;
 
-        @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL, orphanRemoval = true)
+        @OneToMany(mappedBy = "dish",fetch =  FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
         private List<DishSupply> supplies;
 
-        @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL, orphanRemoval = true)
+        @OneToMany(mappedBy = "dish",fetch =  FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
         private List<DishRecipe> recipes;
 
 

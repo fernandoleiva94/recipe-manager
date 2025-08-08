@@ -5,7 +5,6 @@ import com.sevenb.recipes_manager.entity.StockMovement;
 import com.sevenb.recipes_manager.entity.SupplyEntity;
 import com.sevenb.recipes_manager.repository.StockMovementRepository;
 import com.sevenb.recipes_manager.repository.SupplyRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 

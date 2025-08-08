@@ -38,7 +38,7 @@ public class DishService {
     public List<DishOutpuDto> getAllDishes(Long userId) {
         List<DishOutpuDto> dishOutpuDtos = new ArrayList<>();
         dishRepository.findAllByUserId(userId).forEach(l
-                ->dishOutpuDtos.add(toDishDto(l)));
+                ->dishOutpuDtos.add(toBasicDishDto(l)));
         return dishOutpuDtos;
     }
 
@@ -184,4 +184,46 @@ public class DishService {
 
         return outpuDto;
     }
+
+    private DishOutpuDto toBasicDishDto(DishEntity dishEntity){
+        DishOutpuDto outpuDto = new DishOutpuDto();
+        outpuDto.setId(dishEntity.getId());
+        outpuDto.setDescription(dishEntity.getDescription());
+        outpuDto.setName(dishEntity.getName());
+        outpuDto.setImageUrl(dishEntity.getImageUrl());
+        outpuDto.setDishCategory(dishEntity.getCategory());
+        outpuDto.setProfitMargin(dishEntity.getProfitMargin());
+
+        Set<SupplyDto> supplies = dishEntity.getSupplies().stream()
+                .map(supply -> {
+                    SupplyDto supplyDTO = new SupplyDto();
+                    supplyDTO.setName(supply.getSupply().getName());
+                    supplyDTO.setId(supply.getSupply().getId());
+                    supplyDTO.setQuantity(supply.getQuantity());
+                    supplyDTO.setPrice(supply.cost());
+                    supplyDTO.setUnit(supply.getSupply().getUnit());
+                    return supplyDTO;
+                })
+                .collect(Collectors.toSet());
+
+        outpuDto.setSupplies(supplies);
+
+        Set<RecipeInputDto> recipes = dishEntity.getRecipes().stream()
+                .map(recipe ->{
+                    RecipeInputDto recipeInputDto = new RecipeInputDto();
+                    recipeInputDto.setId(recipe.getRecipe().getId());
+                    recipeInputDto.setDescription(recipe.getRecipe().getDescription());
+                    recipeInputDto.setName(recipe.getRecipe().getName());
+                    recipeInputDto.setCostTotal(recipe.cost());
+                    recipeInputDto.setUnit(recipe.getRecipe().getUnit());
+                    recipeInputDto.setQuantity(recipe.getQuantity());
+                    return recipeInputDto;
+                }).collect(Collectors.toSet());
+
+        outpuDto.setRecipe(recipes);
+
+        return outpuDto;
+    }
+
+
 }

@@ -26,6 +26,17 @@ public class LossService {
         SupplyEntity supply = supplyRepository.findById(dto.getSupplyId())
                 .orElseThrow(() -> new RuntimeException("Insumo no encontrado"));
 
+        // Descontar del stock la cantidad perdida
+        if (supply.getStock() == null) {
+            supply.setStock(0.0);
+        }
+        double nuevoStock = supply.getStock() - dto.getLostQuantity();
+        if (nuevoStock < 0) {
+            throw new RuntimeException("Stock insuficiente para registrar la pérdida");
+        }
+        supply.setStock(nuevoStock);
+        supplyRepository.save(supply);
+
         SupplyLoss loss = new SupplyLoss();
         loss.setSupply(supply);
         loss.setLostQuantity(dto.getLostQuantity());
