@@ -10,11 +10,10 @@ import java.util.List;
 @Repository
 public interface DishRepository extends JpaRepository<DishEntity, Long> {
     @EntityGraph(attributePaths = {
-        "dishRecipes.recipe.recipeSupplies.supply",
-        "dishRecipes.recipe.recipeRecipeRelations.subRecipe"
+        "recipes.recipe.recipeSupplies.supply",
+        "recipes.recipe.recipeRecipeRelations.subRecipe"
     })
     List<DishEntity> findAllByUserId(Long userId);
-
 
 
 }

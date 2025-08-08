@@ -1,5 +1,6 @@
 package com.sevenb.recipes_manager.service;
 
+import com.sevenb.recipes_manager.dto.DishCategoryDto;
 import com.sevenb.recipes_manager.dto.DishDto;
 import com.sevenb.recipes_manager.dto.DishOutpuDto;
 import com.sevenb.recipes_manager.dto.recipe.RecipeInputDto;
@@ -38,7 +39,7 @@ public class DishService {
     public List<DishOutpuDto> getAllDishes(Long userId) {
         List<DishOutpuDto> dishOutpuDtos = new ArrayList<>();
         dishRepository.findAllByUserId(userId).forEach(l
-                ->dishOutpuDtos.add(toBasicDishDto(l)));
+                ->dishOutpuDtos.add(toDishDto(l)));
         return dishOutpuDtos;
     }
 
@@ -148,7 +149,14 @@ public class DishService {
         outpuDto.setDescription(dishEntity.getDescription());
         outpuDto.setName(dishEntity.getName());
         outpuDto.setImageUrl(dishEntity.getImageUrl());
-        outpuDto.setDishCategory(dishEntity.getCategory());
+
+
+        if(dishEntity.getCategory() != null) {
+            DishCategoryDto dishCategoryDto = new DishCategoryDto();
+            dishCategoryDto.setId(dishEntity.getCategory().getId());
+            dishCategoryDto.setDescription(dishEntity.getCategory().getDescription());
+            outpuDto.setDishCategory(dishCategoryDto);
+        }
 
         Set<SupplyDto> supplies = dishEntity.getSupplies().stream()
                 .map(supply -> {
@@ -191,7 +199,7 @@ public class DishService {
         outpuDto.setDescription(dishEntity.getDescription());
         outpuDto.setName(dishEntity.getName());
         outpuDto.setImageUrl(dishEntity.getImageUrl());
-        outpuDto.setDishCategory(dishEntity.getCategory());
+
         outpuDto.setProfitMargin(dishEntity.getProfitMargin());
 
         Set<SupplyDto> supplies = dishEntity.getSupplies().stream()

@@ -21,6 +21,6 @@ public class DishOutpuDto {
 
     private Set<RecipeInputDto> recipe;
     private Set<SupplyDto> supplies;
-    private DishCategory dishCategory;
+    private DishCategoryDto dishCategory;
 
 }
