@@ -1,6 +1,7 @@
 package com.sevenb.recipes_manager.service;
 
 import com.sevenb.recipes_manager.Exception.CannotDeleteSupplyException;
+import com.sevenb.recipes_manager.Exception.RecipeInUseException;
 import com.sevenb.recipes_manager.dto.recipe.RecipeInputDto;
 import com.sevenb.recipes_manager.dto.recipe.RecipeOuputDto;
 import com.sevenb.recipes_manager.dto.SupplyDto;
@@ -12,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,12 +25,14 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final SupplyRepository supplyRepository;
     private final RecipeCategoryRepository categoryRepository;
+    private final DishRecipeRepository dishRecipeRepository;
 
     public RecipeService(RecipeRepository recipeRepository, SupplyRepository supplyRepository,
-                         RecipeCategoryRepository categoryRepository) {
+                         RecipeCategoryRepository categoryRepository, DishRecipeRepository dishRecipeRepository) {
         this.recipeRepository = recipeRepository;
         this.supplyRepository = supplyRepository;
         this.categoryRepository = categoryRepository;
+        this.dishRecipeRepository = dishRecipeRepository;
     }
 
 
@@ -78,7 +82,7 @@ public class RecipeService {
     }
 
     public RecipeOuputDto getRecipeById(Long id) {
-        Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new RuntimeException("Recipe not found"));
+        Recipe recipe = recipeRepository.findWithDetailsById(id).orElseThrow(() -> new RuntimeException("Recipe not found"));
         return toRecipeDTO(recipe);
     }
 
@@ -128,6 +132,17 @@ public class RecipeService {
 
 
     public void deleteRecipe(Long id) {
+        List<DishRecipe> usages = dishRecipeRepository.findByRecipeId(id);
+        if (!usages.isEmpty()) {
+            String dishNames = usages.stream()
+                    .map(dishRecipe -> dishRecipe.getDish().getName())
+                    .distinct()
+                    .collect(Collectors.joining(", "));
+            throw new RecipeInUseException(
+                    "No se puede eliminar la receta porque está siendo utilizada por los siguientes platos: " + dishNames
+            );
+        }
+
         try {
             recipeRepository.deleteById(id);
         } catch (DataIntegrityViolationException e) {

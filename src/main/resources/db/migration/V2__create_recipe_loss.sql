@@ -8,4 +8,3 @@ CREATE TABLE recipe_loss (
     notes VARCHAR(255),
     image_url VARCHAR(255)
 );
-

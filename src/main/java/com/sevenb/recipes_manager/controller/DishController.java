@@ -21,12 +21,9 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class DishController {
 
-
     private final DishService dishService;
     private final JwtUtil jwtUtil;
     private final CloudinaryService cloudinaryService;
-
-
 
     @GetMapping
     public ResponseEntity<List<DishOutpuDto>> getAllDishes(@RequestHeader("Authorization") String authHeader) {

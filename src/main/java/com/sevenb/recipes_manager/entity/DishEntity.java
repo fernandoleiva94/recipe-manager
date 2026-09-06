@@ -2,13 +2,10 @@ package com.sevenb.recipes_manager.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "dishes")
@@ -24,14 +21,19 @@ public class DishEntity {
         private Double profitMargin;
         private Long userId;
         private String imageUrl;
-        @ManyToOne(cascade = CascadeType.ALL,fetch =  FetchType.LAZY)
+
+        // No cascada REMOVE hacia categoría: una categoría puede ser compartida por varios platos.
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "category_id")
         private DishCategory category;
 
+        // Set en vez de List: evita MultipleBagFetchException al hacer JOIN FETCH
+        // de dos colecciones (supplies y recipes) en la misma consulta.
         @OneToMany(mappedBy = "dish",fetch =  FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-        private List<DishSupply> supplies;
+        private Set<DishSupply> supplies = new HashSet<>();
 
         @OneToMany(mappedBy = "dish",fetch =  FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-        private List<DishRecipe> recipes;
+        private Set<DishRecipe> recipes = new HashSet<>();
 
 
 

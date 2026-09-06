@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DishRepository extends JpaRepository<DishEntity, Long> {
@@ -15,5 +16,14 @@ public interface DishRepository extends JpaRepository<DishEntity, Long> {
     })
     List<DishEntity> findAllByUserId(Long userId);
 
-
+    @EntityGraph(attributePaths = {
+        "category",
+        "supplies.supply.category",
+        "recipes.recipe.category",
+        "recipes.recipe.recipeSupplies.supply.category",
+        "recipes.recipe.recipeRecipeRelations.subRecipe"
+    })
+    Optional<DishEntity> findWithDetailsById(Long id);
 }
+
+

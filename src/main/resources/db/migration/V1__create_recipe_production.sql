@@ -10,4 +10,3 @@ CREATE TABLE recipe_production (
     cost DOUBLE PRECISION,
     notes VARCHAR(255)
 );
-

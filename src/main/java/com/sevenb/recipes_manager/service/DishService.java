@@ -44,7 +44,7 @@ public class DishService {
     }
 
     public DishOutpuDto getDishById(Long id) {
-        DishEntity dishOutput = dishRepository.findById(id).orElse(null);
+        DishEntity dishOutput = dishRepository.findWithDetailsById(id).orElse(null);
         return Objects.isNull(dishOutput) ?  null : toDishDto(dishOutput);
     }
 
@@ -62,7 +62,7 @@ public class DishService {
         DishEntity savedDish = dishRepository.save(dish);
 
         // 🔹 Mapeamos Supplies
-        List<DishSupply> dishSupplies = dishDTO.getSupplies()
+        Set<DishSupply> dishSupplies = dishDTO.getSupplies()
                 .stream()
                 .map(dtoSupply -> {
                     DishSupply dishSupply = new DishSupply();
@@ -71,10 +71,10 @@ public class DishService {
                     dishSupply.setSupply(supplyRepository.findById(dtoSupply.getId()).orElseThrow());
                     return dishSupply;
                 })
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
         // 🔹 Mapeamos Recipes
-        List<DishRecipe> dishRecipes = dishDTO.getRecipes()
+        Set<DishRecipe> dishRecipes = dishDTO.getRecipes()
                 .stream()
                 .map(dtoRecipe -> {
                     DishRecipe dishRecipe = new DishRecipe();
@@ -83,7 +83,7 @@ public class DishService {
                     dishRecipe.setQuantity(dtoRecipe.getQuantity());
                     return dishRecipe;
                 })
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
         savedDish.setSupplies(dishSupplies);
         savedDish.setRecipes(dishRecipes);
@@ -110,7 +110,7 @@ public class DishService {
         dishEntity.getRecipes().clear();
 
         // 🔹 Mapeamos Supplies
-        List<DishSupply> dishSupplies = dishDTO.getSupplies()
+        Set<DishSupply> dishSupplies = dishDTO.getSupplies()
                 .stream()
                 .map(dtoSupply -> {
                     DishSupply dishSupply = new DishSupply();
@@ -119,12 +119,12 @@ public class DishService {
                     dishSupply.setSupply(supplyRepository.findById(dtoSupply.getId()).orElseThrow());
                     return dishSupply;
                 })
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
         dishEntity.getSupplies().addAll(dishSupplies);
 
         // 🔹 Mapeamos Recipes
-        List<DishRecipe> dishRecipes = dishDTO.getRecipes()
+        Set<DishRecipe> dishRecipes = dishDTO.getRecipes()
                 .stream()
                 .map(dtoRecipe -> {
                     DishRecipe dishRecipe = new DishRecipe();
@@ -133,7 +133,7 @@ public class DishService {
                     dishRecipe.setQuantity(dtoRecipe.getQuantity());
                     return dishRecipe;
                 })
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
         dishEntity.getRecipes().addAll(dishRecipes);
         return toDishDto(dishRepository.save(dishEntity));
     }

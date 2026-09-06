@@ -43,6 +43,19 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Maneja el intento de eliminar una receta que está siendo utilizada por uno o más platos.
+     */
+    @ExceptionHandler(RecipeInUseException.class)
+    public ResponseEntity<Map<String, Object>> handleRecipeInUseException(RecipeInUseException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", HttpStatus.BAD_REQUEST.value());
+        response.put("error", "Error al eliminar receta");
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
      * Maneja excepciones generales (opcional, para no devolver stacktraces).
      */
     @ExceptionHandler(Exception.class)

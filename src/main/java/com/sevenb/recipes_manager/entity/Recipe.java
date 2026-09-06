@@ -30,7 +30,9 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RecipeSupply> recipeSupplies = new HashSet<>();
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    // No cascada REMOVE hacia categoría: una categoría puede ser compartida por varias recetas.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
     private RecipeCategory category ;
 
     @OneToMany(mappedBy = "recipe",fetch =  FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
