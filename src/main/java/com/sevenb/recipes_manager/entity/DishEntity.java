@@ -23,7 +23,7 @@ public class DishEntity {
         private String imageUrl;
 
         // No cascada REMOVE hacia categoría: una categoría puede ser compartida por varios platos.
-        @ManyToOne(fetch = FetchType.LAZY)
+        @ManyToOne(fetch = FetchType.EAGER)
         @JoinColumn(name = "category_id")
         private DishCategory category;
 
