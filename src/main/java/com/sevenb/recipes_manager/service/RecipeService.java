@@ -4,6 +4,7 @@ import com.sevenb.recipes_manager.Exception.CannotDeleteSupplyException;
 import com.sevenb.recipes_manager.Exception.RecipeInUseException;
 import com.sevenb.recipes_manager.dto.recipe.RecipeInputDto;
 import com.sevenb.recipes_manager.dto.recipe.RecipeOuputDto;
+import com.sevenb.recipes_manager.dto.recipe.RecipeCategoryOutputDto;
 import com.sevenb.recipes_manager.dto.SupplyDto;
 import com.sevenb.recipes_manager.dto.recipe.SubRecipeOutputDto;
 import com.sevenb.recipes_manager.entity.*;
@@ -160,7 +161,7 @@ public class RecipeService {
         dto.setCostRecipe(recipe.cost());
         dto.setImageUrl(recipe.getImageUrl());
         dto.setDescription(recipe.getDescription());
-        dto.setRecipeCategory(recipe.getCategory());
+        dto.setRecipeCategory(toRecipeCategoryDto(recipe.getCategory()));
 
         // Transformar recipeSupplies
         Set<SupplyDto> supplies = recipe.getRecipeSupplies().stream()
@@ -203,9 +204,19 @@ public class RecipeService {
         //dto.setCostRecipe(recipe.cost());
         dto.setImageUrl(recipe.getImageUrl());
         dto.setDescription(recipe.getDescription());
-        dto.setRecipeCategory(recipe.getCategory());
+        dto.setRecipeCategory(toRecipeCategoryDto(recipe.getCategory()));
 
         return dto;
+    }
+
+    private RecipeCategoryOutputDto toRecipeCategoryDto(RecipeCategory category) {
+        if (category == null) {
+            return null;
+        }
+        RecipeCategoryOutputDto categoryDto = new RecipeCategoryOutputDto();
+        categoryDto.setId(category.getId());
+        categoryDto.setDescription(category.getDescription());
+        return categoryDto;
     }
 
 
